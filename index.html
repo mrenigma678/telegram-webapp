@@ -12,8 +12,8 @@
   body, html {
     margin: 0; padding: 0; height: 100%;
     font-family: Arial, sans-serif;
-    background: url('your-background-image.jpg') no-repeat center center fixed;
-    background-size: cover;
+    /* background: url('your-background-image.jpg') no-repeat center center fixed; */
+    /* background-size: cover; */
     color: #222;
     display: flex;
     flex-direction: column;
@@ -23,6 +23,9 @@
     display: flex;
     min-height: 0;
     overflow: hidden;
+    background: url('your-background-image.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed; /*  фиксируем фон  */
   }
   nav {
     width: 220px;
@@ -197,15 +200,6 @@
     cursor: pointer;
     font-size: 14px;
   }
-  #cart-modal button.close-btn {
-    background: #4CAF50;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-  }
   @media (max-width: 768px) {
     nav {
       width: 140px;
@@ -276,7 +270,7 @@
   </main>
 </div>
 
-<!-- Модальное окно корзины -->
+<!--  Модальное окно корзины  -->
 <div id="cart-modal">
   <div class="modal-content">
     <h3>Корзина</h3>
@@ -428,7 +422,6 @@
         `;
         cartItemsList.appendChild(li);
       }
-      // Добавляем обработчики на кнопки удаления
       cartItemsList.querySelectorAll('button.remove-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.id;
