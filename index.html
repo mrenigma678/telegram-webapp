@@ -6,14 +6,13 @@
 <title>Telegram Web App Магазин</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  /* Сброс и базовые стили */
   * {
     box-sizing: border-box;
   }
   body, html {
     margin: 0; padding: 0; height: 100%;
     font-family: Arial, sans-serif;
-    background: url('your-background-image.png') no-repeat center center fixed;
+    background: url('your-background-image.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #222;
     display: flex;
@@ -25,7 +24,6 @@
     min-height: 0;
     overflow: hidden;
   }
-  /* Меню слева */
   nav {
     width: 220px;
     background-color: rgba(255,255,255,0.95);
@@ -59,7 +57,6 @@
     background-color: #4CAF50;
     color: white;
   }
-  /* Основной контент */
   main {
     flex: 1;
     padding: 20px;
@@ -69,7 +66,6 @@
     align-items: center;
     background-color: rgba(255,255,255,0.85);
   }
-  /* Корзина сверху по центру */
   #cart {
     position: sticky;
     top: 0;
@@ -86,7 +82,6 @@
     margin-left: 220px;
     text-align: center;
   }
-  /* Сетка карточек товаров */
   #products {
     margin-top: 20px;
     width: 100%;
@@ -96,7 +91,6 @@
     gap: 20px;
     justify-items: center;
   }
-  /* Карточка товара */
   .product-card {
     background: white;
     border-radius: 10px;
@@ -133,7 +127,6 @@
     font-weight: bold;
     margin-bottom: 8px;
   }
-  /* Описание товара */
   #product-description {
     max-width: 900px;
     background: white;
@@ -158,7 +151,11 @@
     cursor: pointer;
     font-size: 16px;
   }
-  /* Модальное окно корзины */
+  #product-description button#close-desc-btn {
+    background: #ccc;
+    color: #333;
+    margin-left: 10px;
+  }
   #cart-modal {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -187,6 +184,18 @@
   }
   #cart-modal ul li {
     margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #cart-modal ul li button.remove-btn {
+    background: #e74c3c;
+    border: none;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
   }
   #cart-modal button.close-btn {
     background: #4CAF50;
@@ -197,7 +206,6 @@
     cursor: pointer;
     font-size: 16px;
   }
-  /* Адаптив */
   @media (max-width: 768px) {
     nav {
       width: 140px;
@@ -263,7 +271,7 @@
       <p id="desc-text"></p>
       <p><b>Цена: <span id="desc-price"></span> ₽</b></p>
       <button id="add-to-cart-btn">Добавить в корзину</button>
-      <button id="close-desc-btn" style="margin-left:10px;background:#ccc;color:#333;">Закрыть</button>
+      <button id="close-desc-btn">Закрыть</button>
     </div>
   </main>
 </div>
@@ -279,11 +287,9 @@
 </div>
 
 <script>
-  // Инициализация Telegram WebApp
   const tg = window.Telegram.WebApp;
   tg.expand();
 
-  // Данные товаров
   const catalog = {
     tshirts: [
       {id: 'tclassic', name: 'Футболка Classic', price: 1200, img: 'https://via.placeholder.com/260x160?text=Футболка+Classic', description: 'Классическая футболка из хлопка, удобная и стильная.'},
@@ -305,7 +311,7 @@
       {id: 'pen', name: 'Ручка', price: 150, img: 'https://via.placeholder.com/260x160?text=Ручка', description: 'Качественная шариковая ручка.'},
       {id: 'notebooks', name: 'Блокноты', price: 300, img: 'https://via.placeholder.com/260x160?text=Блокноты', description: 'Блокноты для записей и заметок.'},
       {id: 'diaries', name: 'Ежедневники', price: 500, img: 'https://via.placeholder.com/260x160?text=Ежедневники', description: 'Ежедневники для планирования.'},
-      {id: 'notebooks', name: 'Блокноты', price: 300, img: 'https://via.placeholder.com/260x160?text=Блокноты', description: 'Блокноты для записей и заметок.'} // повтор для 4 товаров, можно убрать дубли
+      {id: 'notebooks2', name: 'Блокноты 2', price: 300, img: 'https://via.placeholder.com/260x160?text=Блокноты+2', description: 'Ещё один блокнот.'},
     ],
     powerbanks: [
       {id: 'powerbank', name: 'Powerbank', price: 1800, img: 'https://via.placeholder.com/260x160?text=Powerbank', description: 'Портативный аккумулятор для зарядки устройств.'},
@@ -317,10 +323,8 @@
     ],
   };
 
-  // Корзина - объект с id товара и количеством
   const cart = {};
 
-  // Элементы DOM
   const categoriesBtns = document.querySelectorAll('nav button.category-btn');
   const productsContainer = document.getElementById('products');
   const productDescription = document.getElementById('product-description');
@@ -338,10 +342,10 @@
   let currentCategory = 'tshirts';
   let currentProduct = null;
 
-  // Функция отрисовки товаров выбранной категории
   function renderProducts(category) {
     productsContainer.innerHTML = '';
     productDescription.style.display = 'none';
+    productsContainer.style.display = 'grid';
     const items = catalog[category] || [];
     items.forEach(product => {
       const card = document.createElement('div');
@@ -357,7 +361,6 @@
     });
   }
 
-  // Показ описания товара
   function showProductDescription(product) {
     currentProduct = product;
     descName.textContent = product.name;
@@ -367,14 +370,12 @@
     productsContainer.style.display = 'none';
   }
 
-  // Скрыть описание
   closeDescBtn.addEventListener('click', () => {
     productDescription.style.display = 'none';
     productsContainer.style.display = 'grid';
     currentProduct = null;
   });
 
-  // Добавить в корзину
   addToCartBtn.addEventListener('click', () => {
     if (!currentProduct) return;
     if (cart[currentProduct.id]) {
@@ -383,12 +384,9 @@
       cart[currentProduct.id] = {...currentProduct, count: 1};
     }
     updateCartUI();
-    tg.MainButton.setText(`В корзине: ${calculateCartTotal()} ₽`);
-    tg.MainButton.show();
     alert(`Товар "${currentProduct.name}" добавлен в корзину`);
   });
 
-  // Обновить UI корзины (сумма и список)
   function updateCartUI() {
     let total = 0;
     for (const key in cart) {
@@ -397,7 +395,6 @@
     cartDiv.textContent = `Корзина: ${total} ₽ (Показать)`;
   }
 
-  // Подсчёт суммы корзины
   function calculateCartTotal() {
     let total = 0;
     for (const key in cart) {
@@ -406,30 +403,52 @@
     return total;
   }
 
-  // Показать модальное окно корзины
   cartDiv.addEventListener('click', () => {
     renderCartModal();
     cartModal.style.display = 'flex';
   });
 
-  // Закрыть модальное окно корзины
   cartModalCloseBtn.addEventListener('click', () => {
     cartModal.style.display = 'none';
   });
 
-  // Отрисовка содержимого корзины в модальном окне
   function renderCartModal() {
     cartItemsList.innerHTML = '';
-    for (const key in cart) {
-      const item = cart[key];
+    if (Object.keys(cart).length === 0) {
       const li = document.createElement('li');
-      li.textContent = `${item.name} × ${item.count} — ${item.price * item.count} ₽`;
+      li.textContent = 'Корзина пуста';
       cartItemsList.appendChild(li);
+    } else {
+      for (const key in cart) {
+        const item = cart[key];
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${item.name} × ${item.count} — ${item.price * item.count} ₽</span>
+          <button class="remove-btn" data-id="${item.id}">×</button>
+        `;
+        cartItemsList.appendChild(li);
+      }
+      // Добавляем обработчики на кнопки удаления
+      cartItemsList.querySelectorAll('button.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          removeFromCart(id);
+        });
+      });
     }
     cartTotalSpan.textContent = calculateCartTotal();
   }
 
-  // Обработка кликов по категориям
+  function removeFromCart(id) {
+    if (!cart[id]) return;
+    cart[id].count--;
+    if (cart[id].count <= 0) {
+      delete cart[id];
+    }
+    updateCartUI();
+    renderCartModal();
+  }
+
   categoriesBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       categoriesBtns.forEach(b => b.classList.remove('active'));
@@ -439,21 +458,13 @@
     });
   });
 
-  // Инициализация
   renderProducts(currentCategory);
   updateCartUI();
 
-  // Telegram MainButton (опционально)
   tg.MainButton.setText('Перейти в корзину');
   tg.MainButton.onClick(() => {
     cartDiv.click();
   });
-
-  // Обработка изменения темы Telegram (для примера)
-  const themeParams = tg.themeParams;
-  if (themeParams && themeParams.bg_color) {
-    document.body.style.backgroundColor = themeParams.bg_color;
-  }
 </script>
 </body>
 </html>
