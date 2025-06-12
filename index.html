@@ -13,7 +13,7 @@
     margin: 0; padding: 0; height: 100%;
     font-family: Arial, sans-serif;
     /* Основной фон с картинкой */
-    background: url('your-background-image.png') no-repeat center center fixed;
+    background: url('your-background-image.jpeg') no-repeat center center fixed;
     background-size: cover;
     color: #222;
     display: flex;
@@ -24,13 +24,12 @@
     display: flex;
     min-height: 0;
     overflow: hidden;
-    /* Единый фон для меню и основного контента — прозрачный белый с 10% непрозрачности */
-    background-color: rgba(255, 255, 255, 0.1);
+    /* Убираем белый фон, фон прозрачный */
+    background-color: transparent;
   }
   nav {
-    width: 220px;
-    /* Убираем белый фон, оставляем только прозрачный */
-    background-color: transparent;
+    width: 176px; /* уменьшено примерно на 20% от 220px */
+    background-color: transparent; /* убираем белый фон */
     border-right: none; /* убираем разделение */
     padding: 15px 10px;
     display: flex;
@@ -39,15 +38,14 @@
     top: 0;
     height: 100vh;
     overflow-y: auto;
-    /* Единый фон меню и контента */
-    background-color: rgba(255, 255, 255, 0.1);
   }
   nav h2 {
     margin: 0 0 15px 10px;
-    font-size: 18px;
+    font-size: 14.4px; /* уменьшено на 20% от 18px */
     user-select: none;
-    font-weight: 700;      /* более жирный */
-    font-style: italic;    /* курсив */
+    font-weight: 700;      /* жирный */
+    font-style: normal;    /* убран курсив */
+    color: black;          /* черный текст */
   }
   nav button.category-btn {
     background: none;
@@ -55,17 +53,18 @@
     padding: 10px 15px;
     margin: 5px 0;
     text-align: left;
-    font-size: 16px;
+    font-size: 12.8px; /* уменьшено на 20% от 16px */
     cursor: pointer;
     border-radius: 6px;
-    transition: background-color 0.3s;
-    font-weight: 700;      /* более жирный */
-    font-style: italic;    /* курсив */
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: 700;      /* жирный */
+    font-style: normal;    /* убран курсив */
+    color: black;          /* черный текст */
   }
   nav button.category-btn.active,
   nav button.category-btn:hover {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #2f2f2f; /* серо-черный фон выделения */
+    color: white;              /* белый текст выделения */
   }
   main {
     flex: 1;
@@ -74,17 +73,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Единый фон с меню — прозрачный белый 10% */
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: transparent; /* убираем белый фон */
     position: relative;
   }
   #cart {
     position: sticky;
     top: 0;
-    left: 220px;
-    background: #4CAF50;
+    left: 176px; /* подвинут в соответствии с шириной меню */
+    background: #2f2f2f; /* серо-черный фон, как выделение категорий */
     color: white;
-    font-weight: bold;
+    font-weight: 700;
     padding: 10px 15px;
     border-radius: 0 0 10px 10px;
     cursor: pointer;
@@ -138,7 +136,7 @@
     word-wrap: break-word;
   }
   .product-price {
-    color: #4CAF50;
+    color: #2f2f2f; /* заменен зеленый на серо-черный */
     font-weight: bold;
     margin-bottom: 8px;
     font-size: 14px;
@@ -163,7 +161,7 @@
     gap: 10px;
   }
   #product-description button {
-    background: #4CAF50;
+    background: #2f2f2f; /* серо-черный вместо зеленого */
     border: none;
     color: white;
     padding: 5px 8px;
@@ -175,20 +173,20 @@
     transition: background-color 0.3s;
   }
   #product-description button#close-desc-btn {
-    background: #ccc;
-    color: #333;
+    background: #555555; /* чуть светлее серо-черного */
+    color: white;
     min-width: 80px;
     flex-shrink: 0;
   }
   #product-description button:hover {
-    background-color: #45a049;
+    background-color: #1f1f1f;
   }
   #notification {
     position: fixed;
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    background: #4CAF50;
+    background: #2f2f2f;
     color: white;
     padding: 8px 15px;
     border-radius: 6px;
@@ -231,7 +229,7 @@
     align-items: center;
   }
   #cart-modal ul li button.remove-btn {
-    background: #e74c3c;
+    background: #555555; /* серо-черный */
     border: none;
     color: white;
     padding: 3px 8px;
@@ -240,7 +238,7 @@
     font-size: 14px;
   }
   #cart-modal button.close-btn {
-    background: #4CAF50;
+    background: #2f2f2f; /* серо-черный */
     border: none;
     color: white;
     padding: 10px 15px;
@@ -250,27 +248,39 @@
   }
   @media (max-width: 768px) {
     nav {
-      width: 140px;
+      width: 112px; /* 20% меньше 140px */
       padding: 10px 5px;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: transparent;
     }
     nav h2 {
-      font-size: 16px;
+      font-size: 11.52px; /* 20% меньше 14.4px */
       margin-left: 5px;
+      color: black;
+      font-weight: 700;
+      font-style: normal;
     }
     nav button.category-btn {
-      font-size: 14px;
+      font-size: 10.24px; /* 20% меньше 12.8px */
       padding: 8px 10px;
       font-weight: 700;
-      font-style: italic;
+      font-style: normal;
+      color: black;
+    }
+    nav button.category-btn.active,
+    nav button.category-btn:hover {
+      background-color: #2f2f2f;
+      color: white;
     }
     #cart {
-      left: 140px;
+      left: 112px;
       margin-left: 10px;
-      font-size: 14px;
+      font-size: 11.2px; /* 20% меньше 14px */
       padding: 8px 10px;
       height: 38px;
       line-height: 20px;
+      background: #2f2f2f;
+      color: white;
+      font-weight: 700;
     }
     #products {
       max-width: 100%;
@@ -289,11 +299,13 @@
     }
     .product-price {
       font-size: 11px;
+      color: #2f2f2f;
     }
     #product-description {
       max-width: 100%;
       padding: 15px;
       font-size: 14px;
+      background: white;
     }
     #product-description .buttons-container {
       flex-direction: column;
@@ -303,9 +315,19 @@
       padding: 4px 7px;
       font-size: 9px;
       min-width: 100%;
+      background: #2f2f2f;
+      color: white;
     }
     #product-description button#close-desc-btn {
       min-width: 100%;
+      background: #555555;
+      color: white;
+    }
+    #cart-modal ul li button.remove-btn {
+      background: #555555;
+    }
+    #cart-modal button.close-btn {
+      background: #2f2f2f;
     }
   }
 </style>
