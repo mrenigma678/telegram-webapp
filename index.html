@@ -23,12 +23,12 @@
     display: flex;
     min-height: 0;
     overflow: hidden;
-    background-color: transparent; /* без белого фона */
+    background-color: transparent;
   }
   nav {
-    width: 308px; /* увеличено на 40% от 220px */
-    background-color: rgba(211, 211, 211, 0.25); /* светло-серый с прозрачностью 25% */
-    border-right: none; /* убран разделитель */
+    width: 176px; /* 20% меньше 220px */
+    background-color: rgba(211, 211, 211, 0.4); /* светло-серый с 40% непрозрачности */
+    border-right: none;
     padding: 15px 10px;
     display: flex;
     flex-direction: column;
@@ -39,10 +39,10 @@
   }
   nav h2 {
     margin: 0 0 15px 10px;
-    font-size: 25.2px; /* увеличено на 40% от 18px */
+    font-size: 23.4px; /* 30% больше 18px */
     user-select: none;
-    font-weight: 700;      /* жирный */
-    font-style: normal;    /* без курсива */
+    font-weight: 700;
+    font-style: normal; /* курсив убран */
     color: black;
   }
   nav button.category-btn {
@@ -51,18 +51,27 @@
     padding: 10px 15px;
     margin: 5px 0;
     text-align: left;
-    font-size: 22.4px; /* увеличено на 40% от 16px */
+    font-size: 20.8px; /* 30% больше 16px */
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.3s, color 0.3s;
-    font-weight: 700;      /* жирный */
-    font-style: normal;    /* без курсива */
+    font-weight: 700;
+    font-style: normal;
     color: black;
   }
   nav button.category-btn.active,
   nav button.category-btn:hover {
-    background-color: #2f2f2f; /* серо-черный фон выделения */
-    color: white;              /* белый текст выделения */
+    background-color: #2f2f2f; /* серо-черный */
+    color: white;
+  }
+  /* Блок под картинку сразу под категориями */
+  #menu-image-placeholder {
+    width: 100%;
+    height: 150px; /* Зарезервированное место под картинку */
+    margin: 15px 0 0 0;
+    background-color: #ddd; /* светлый фон-заглушка */
+    border-radius: 8px;
+    flex-shrink: 0;
   }
   main {
     flex: 1;
@@ -71,26 +80,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: transparent; /* без белого фона */
+    background-color: transparent;
     position: relative;
-  }
-  #cart {
-    position: fixed; /* фиксируем корзину внизу */
-    bottom: 10px;
-    left: 308px; /* подвинут в соответствии с шириной меню */
-    background: #2f2f2f; /* серо-черный фон, как выделение категорий */
-    color: white;
-    font-weight: 700;
-    padding: 9px 13.5px; /* уменьшено на 10% от 10px 15px */
-    border-radius: 10px 10px 10px 10px;
-    cursor: pointer;
-    user-select: none;
-    z-index: 1000;
-    height: 40.5px; /* уменьшено на 10% от 45px */
-    line-height: 23px;
-    white-space: nowrap;
-    font-size: 14.4px; /* уменьшено на 10% от 16px */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
   #products {
     margin-top: 20px;
@@ -193,6 +184,26 @@
     transition: opacity 0.3s;
     z-index: 200;
   }
+  /* Корзина снизу по центру, уменьшена на 10% */
+  #cart {
+    background: #2f2f2f;
+    color: white;
+    font-weight: 700;
+    padding: 9px 13.5px; /* 10% меньше 10px 15px */
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14.4px; /* 10% меньше 16px */
+    width: fit-content;
+    margin: 20px auto 0 auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  #cart:hover {
+    background-color: #1f1f1f;
+  }
+  #cart:active {
+    background-color: #0f0f0f;
+  }
   #cart-modal {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -245,19 +256,19 @@
   }
   @media (max-width: 768px) {
     nav {
-      width: 246px; /* 40% больше 176px */
+      width: 140.8px; /* 20% меньше 176px */
       padding: 10px 5px;
-      background-color: rgba(211, 211, 211, 0.25);
+      background-color: rgba(211, 211, 211, 0.4);
     }
     nav h2 {
-      font-size: 21px; /* 40% больше 15px */
+      font-size: 18.12px; /* 30% больше 13.94px (уменьшенный размер) */
       margin-left: 5px;
       color: black;
       font-weight: 700;
       font-style: normal;
     }
     nav button.category-btn {
-      font-size: 17.92px; /* 40% больше 12.8px */
+      font-size: 16.64px; /* 30% больше 12.8px уменьшенного */
       padding: 8px 10px;
       font-weight: 700;
       font-style: normal;
@@ -269,15 +280,9 @@
       color: white;
     }
     #cart {
-      left: 246px;
-      margin-left: 10px;
-      font-size: 12.96px; /* 10% меньше 14.4px */
-      padding: 7.2px 12.15px; /* 10% меньше */
-      height: 36.45px; /* 10% меньше 40.5px */
-      line-height: 20px;
-      background: #2f2f2f;
-      color: white;
-      font-weight: 700;
+      font-size: 13px; /* 10% меньше 14.4px */
+      padding: 8px 12px;
+      margin: 15px auto 0 auto;
     }
     #products {
       max-width: 100%;
@@ -333,6 +338,9 @@
 <div id="app">
   <nav>
     <h2>Категории</h2>
+    <div id="menu-image-placeholder" aria-label="Место под картинку меню">
+  <img src="/Users/swiftmac/Documents/my_bot/menu-image-placeholder.png" alt="Описание картинки" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;" />
+</div>
     <button class="category-btn active" data-category="tshirts">Футболки</button>
     <button class="category-btn" data-category="hoodies">Худи, свитшоты</button>
     <button class="category-btn" data-category="caps">Кепки, панамы</button>
@@ -352,16 +360,15 @@
         <button id="close-desc-btn">Закрыть</button>
       </div>
     </div>
+    <div id="cart">Корзина: 0 ₽ (Показать)</div>
   </main>
 </div>
 
-<div id="cart" title="Показать корзину">Корзина: 0 ₽ (Показать)</div>
+<div id="notification" role="alert" aria-live="assertive"></div>
 
-<div id="notification"></div>
-
-<div id="cart-modal">
+<div id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title">
   <div class="modal-content">
-    <h3>Корзина</h3>
+    <h3 id="cart-modal-title">Корзина</h3>
     <ul id="cart-items-list"></ul>
     <p><b>Итого: <span id="cart-total"></span> ₽</b></p>
     <button class="close-btn">Закрыть</button>
