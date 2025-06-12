@@ -12,7 +12,6 @@
   body, html {
     margin: 0; padding: 0; height: 100%;
     font-family: Arial, sans-serif;
-    /* Основной фон с картинкой */
     background: url('your-background-image.jpeg') no-repeat center center fixed;
     background-size: cover;
     color: #222;
@@ -24,13 +23,12 @@
     display: flex;
     min-height: 0;
     overflow: hidden;
-    /* Убираем белый фон, фон прозрачный */
-    background-color: transparent;
+    background-color: transparent; /* без белого фона */
   }
   nav {
-    width: 176px; /* уменьшено примерно на 20% от 220px */
-    background-color: transparent; /* убираем белый фон */
-    border-right: none; /* убираем разделение */
+    width: 308px; /* увеличено на 40% от 220px */
+    background-color: rgba(211, 211, 211, 0.25); /* светло-серый с прозрачностью 25% */
+    border-right: none; /* убран разделитель */
     padding: 15px 10px;
     display: flex;
     flex-direction: column;
@@ -41,11 +39,11 @@
   }
   nav h2 {
     margin: 0 0 15px 10px;
-    font-size: 14.4px; /* уменьшено на 20% от 18px */
+    font-size: 25.2px; /* увеличено на 40% от 18px */
     user-select: none;
     font-weight: 700;      /* жирный */
-    font-style: normal;    /* убран курсив */
-    color: black;          /* черный текст */
+    font-style: normal;    /* без курсива */
+    color: black;
   }
   nav button.category-btn {
     background: none;
@@ -53,13 +51,13 @@
     padding: 10px 15px;
     margin: 5px 0;
     text-align: left;
-    font-size: 12.8px; /* уменьшено на 20% от 16px */
+    font-size: 22.4px; /* увеличено на 40% от 16px */
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.3s, color 0.3s;
     font-weight: 700;      /* жирный */
-    font-style: normal;    /* убран курсив */
-    color: black;          /* черный текст */
+    font-style: normal;    /* без курсива */
+    color: black;
   }
   nav button.category-btn.active,
   nav button.category-btn:hover {
@@ -73,27 +71,26 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: transparent; /* убираем белый фон */
+    background-color: transparent; /* без белого фона */
     position: relative;
   }
   #cart {
-    position: sticky;
-    top: 0;
-    left: 176px; /* подвинут в соответствии с шириной меню */
+    position: fixed; /* фиксируем корзину внизу */
+    bottom: 10px;
+    left: 308px; /* подвинут в соответствии с шириной меню */
     background: #2f2f2f; /* серо-черный фон, как выделение категорий */
     color: white;
     font-weight: 700;
-    padding: 10px 15px;
-    border-radius: 0 0 10px 10px;
+    padding: 9px 13.5px; /* уменьшено на 10% от 10px 15px */
+    border-radius: 10px 10px 10px 10px;
     cursor: pointer;
     user-select: none;
-    z-index: 10;
-    height: 45px;
-    line-height: 25px;
-    margin-left: 10px;
-    align-self: flex-start;
+    z-index: 1000;
+    height: 40.5px; /* уменьшено на 10% от 45px */
+    line-height: 23px;
     white-space: nowrap;
-    font-size: 16px;
+    font-size: 14.4px; /* уменьшено на 10% от 16px */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
   #products {
     margin-top: 20px;
@@ -136,7 +133,7 @@
     word-wrap: break-word;
   }
   .product-price {
-    color: #2f2f2f; /* заменен зеленый на серо-черный */
+    color: #2f2f2f;
     font-weight: bold;
     margin-bottom: 8px;
     font-size: 14px;
@@ -161,7 +158,7 @@
     gap: 10px;
   }
   #product-description button {
-    background: #2f2f2f; /* серо-черный вместо зеленого */
+    background: #2f2f2f;
     border: none;
     color: white;
     padding: 5px 8px;
@@ -173,7 +170,7 @@
     transition: background-color 0.3s;
   }
   #product-description button#close-desc-btn {
-    background: #555555; /* чуть светлее серо-черного */
+    background: #555555;
     color: white;
     min-width: 80px;
     flex-shrink: 0;
@@ -229,7 +226,7 @@
     align-items: center;
   }
   #cart-modal ul li button.remove-btn {
-    background: #555555; /* серо-черный */
+    background: #555555;
     border: none;
     color: white;
     padding: 3px 8px;
@@ -238,7 +235,7 @@
     font-size: 14px;
   }
   #cart-modal button.close-btn {
-    background: #2f2f2f; /* серо-черный */
+    background: #2f2f2f;
     border: none;
     color: white;
     padding: 10px 15px;
@@ -248,19 +245,19 @@
   }
   @media (max-width: 768px) {
     nav {
-      width: 112px; /* 20% меньше 140px */
+      width: 246px; /* 40% больше 176px */
       padding: 10px 5px;
-      background-color: transparent;
+      background-color: rgba(211, 211, 211, 0.25);
     }
     nav h2 {
-      font-size: 11.52px; /* 20% меньше 14.4px */
+      font-size: 21px; /* 40% больше 15px */
       margin-left: 5px;
       color: black;
       font-weight: 700;
       font-style: normal;
     }
     nav button.category-btn {
-      font-size: 10.24px; /* 20% меньше 12.8px */
+      font-size: 17.92px; /* 40% больше 12.8px */
       padding: 8px 10px;
       font-weight: 700;
       font-style: normal;
@@ -272,11 +269,11 @@
       color: white;
     }
     #cart {
-      left: 112px;
+      left: 246px;
       margin-left: 10px;
-      font-size: 11.2px; /* 20% меньше 14px */
-      padding: 8px 10px;
-      height: 38px;
+      font-size: 12.96px; /* 10% меньше 14.4px */
+      padding: 7.2px 12.15px; /* 10% меньше */
+      height: 36.45px; /* 10% меньше 40.5px */
       line-height: 20px;
       background: #2f2f2f;
       color: white;
@@ -345,7 +342,6 @@
     <button class="category-btn" data-category="bottles">Бутылки, кружки</button>
   </nav>
   <main>
-    <div id="cart">Корзина: 0 ₽ (Показать)</div>
     <div id="products"></div>
     <div id="product-description" style="display:none;">
       <h3 id="desc-name"></h3>
@@ -358,6 +354,8 @@
     </div>
   </main>
 </div>
+
+<div id="cart" title="Показать корзину">Корзина: 0 ₽ (Показать)</div>
 
 <div id="notification"></div>
 
