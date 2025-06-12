@@ -26,8 +26,8 @@
     background-color: transparent;
   }
   nav {
-    width: 176px; /* 20% меньше 220px */
-    background-color: rgba(211, 211, 211, 0.4); /* светло-серый с 40% непрозрачности */
+    width: 198px; /* 10% меньше 220px = 198px */
+    background-color: rgba(211, 211, 211, 0.4); /* светло-серый с 40% прозрачности */
     border-right: none;
     padding: 15px 10px;
     display: flex;
@@ -39,10 +39,10 @@
   }
   nav h2 {
     margin: 0 0 15px 10px;
-    font-size: 23.4px; /* 30% больше 18px */
+    font-size: 22.86px; /* +27% от 18px = ~22.86px */
     user-select: none;
     font-weight: 700;
-    font-style: normal; /* курсив убран */
+    font-style: normal;
     color: black;
   }
   nav button.category-btn {
@@ -51,7 +51,7 @@
     padding: 10px 15px;
     margin: 5px 0;
     text-align: left;
-    font-size: 20.8px; /* 30% больше 16px */
+    font-size: 19.2px; /* +27% от 15px (округл. от 16px) = ~19.2px */
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.3s, color 0.3s;
@@ -63,15 +63,6 @@
   nav button.category-btn:hover {
     background-color: #2f2f2f; /* серо-черный */
     color: white;
-  }
-  /* Блок под картинку сразу под категориями */
-  #menu-image-placeholder {
-    width: 100%;
-    height: 150px; /* Зарезервированное место под картинку */
-    margin: 15px 0 0 0;
-    background-color: #ddd; /* светлый фон-заглушка */
-    border-radius: 8px;
-    flex-shrink: 0;
   }
   main {
     flex: 1;
@@ -184,26 +175,6 @@
     transition: opacity 0.3s;
     z-index: 200;
   }
-  /* Корзина снизу по центру, уменьшена на 10% */
-  #cart {
-    background: #2f2f2f;
-    color: white;
-    font-weight: 700;
-    padding: 9px 13.5px; /* 10% меньше 10px 15px */
-    border-radius: 10px;
-    cursor: pointer;
-    user-select: none;
-    font-size: 14.4px; /* 10% меньше 16px */
-    width: fit-content;
-    margin: 20px auto 0 auto;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  }
-  #cart:hover {
-    background-color: #1f1f1f;
-  }
-  #cart:active {
-    background-color: #0f0f0f;
-  }
   #cart-modal {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -254,21 +225,32 @@
     cursor: pointer;
     font-size: 16px;
   }
+  /* Кнопка корзины внизу под карточками */
+  #cart {
+    position: static;
+    margin: 20px auto 0 auto;
+    width: fit-content;
+    font-size: 14.4px; /* уменьшена на 10% от 16px */
+    height: 40px;      /* уменьшена на 10% от 45px */
+    line-height: 24px;
+    padding: 8px 14px;
+    border-radius: 10px;
+  }
   @media (max-width: 768px) {
     nav {
-      width: 140.8px; /* 20% меньше 176px */
+      width: 158px; /* 10% меньше 176px */
       padding: 10px 5px;
       background-color: rgba(211, 211, 211, 0.4);
     }
     nav h2 {
-      font-size: 18.12px; /* 30% больше 13.94px (уменьшенный размер) */
+      font-size: 18.3px; /* 27% больше 14.4px */
       margin-left: 5px;
       color: black;
       font-weight: 700;
       font-style: normal;
     }
     nav button.category-btn {
-      font-size: 16.64px; /* 30% больше 12.8px уменьшенного */
+      font-size: 15.36px; /* 27% больше 12.8px */
       padding: 8px 10px;
       font-weight: 700;
       font-style: normal;
@@ -280,9 +262,13 @@
       color: white;
     }
     #cart {
-      font-size: 13px; /* 10% меньше 14.4px */
-      padding: 8px 12px;
-      margin: 15px auto 0 auto;
+      margin: 20px auto 0 auto;
+      font-size: 12.96px; /* 10% меньше 14.4px */
+      height: 36px;       /* 10% меньше 40px */
+      line-height: 22px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      width: fit-content;
     }
     #products {
       max-width: 100%;
@@ -338,16 +324,18 @@
 <div id="app">
   <nav>
     <h2>Категории</h2>
-    <div id="menu-image-placeholder" aria-label="Место под картинку меню">
-  <img src="/Users/swiftmac/Documents/my_bot/menu-image-placeholder.png" alt="Описание картинки" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;" />
-</div>
-    <button class="category-btn active" data-category="tshirts">Футболки</button>
+    <button class="category-btn" data-category="tshirts">Футболки</button>
     <button class="category-btn" data-category="hoodies">Худи, свитшоты</button>
     <button class="category-btn" data-category="caps">Кепки, панамы</button>
     <button class="category-btn" data-category="backpacks">Рюкзаки</button>
     <button class="category-btn" data-category="stationery">Канцелярия</button>
     <button class="category-btn" data-category="powerbanks">Powerbank</button>
-    <button class="category-btn" data-category="bottles">Бутылки, кружки</button>
+    <button class="category-btn active" data-category="bottles">Бутылки, кружки</button>
+    <!-- Зарезервированное место под логотип под категориями -->
+    <div style="margin-top: 20px; height: 120px; display: flex; justify-content: center; align-items: center;">
+      <!-- Логотип можно вставить сюда -->
+      <img src="your-logo.png" alt="Логотип" style="max-width: 90%; max-height: 100%;" />
+    </div>
   </nav>
   <main>
     <div id="products"></div>
@@ -364,11 +352,11 @@
   </main>
 </div>
 
-<div id="notification" role="alert" aria-live="assertive"></div>
+<div id="notification"></div>
 
-<div id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title">
+<div id="cart-modal">
   <div class="modal-content">
-    <h3 id="cart-modal-title">Корзина</h3>
+    <h3>Корзина</h3>
     <ul id="cart-items-list"></ul>
     <p><b>Итого: <span id="cart-total"></span> ₽</b></p>
     <button class="close-btn">Закрыть</button>
@@ -429,7 +417,7 @@
   const cartModalCloseBtn = cartModal.querySelector('.close-btn');
   const notification = document.getElementById('notification');
 
-  let currentCategory = 'tshirts';
+  let currentCategory = 'bottles';
   let currentProduct = null;
 
   let cachedProducts = [];
