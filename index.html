@@ -6,14 +6,14 @@
 <title>Telegram Web App Магазин</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  /* Ваш существующий CSS без изменений */
   * {
     box-sizing: border-box;
   }
   body, html {
     margin: 0; padding: 0; height: 100%;
     font-family: Arial, sans-serif;
-    background: url('your-background-image.jpg') no-repeat center center fixed;
+    /* Основной фон с картинкой */
+    background: url('your-background-image.png') no-repeat center center fixed;
     background-size: cover;
     color: #222;
     display: flex;
@@ -24,11 +24,14 @@
     display: flex;
     min-height: 0;
     overflow: hidden;
+    /* Единый фон для меню и основного контента — прозрачный белый с 10% непрозрачности */
+    background-color: rgba(255, 255, 255, 0.1);
   }
   nav {
     width: 220px;
-    background-color: rgba(255,255,255,0.95);
-    border-right: 1px solid #ccc;
+    /* Убираем белый фон, оставляем только прозрачный */
+    background-color: transparent;
+    border-right: none; /* убираем разделение */
     padding: 15px 10px;
     display: flex;
     flex-direction: column;
@@ -36,11 +39,15 @@
     top: 0;
     height: 100vh;
     overflow-y: auto;
+    /* Единый фон меню и контента */
+    background-color: rgba(255, 255, 255, 0.1);
   }
   nav h2 {
     margin: 0 0 15px 10px;
     font-size: 18px;
     user-select: none;
+    font-weight: 700;      /* более жирный */
+    font-style: italic;    /* курсив */
   }
   nav button.category-btn {
     background: none;
@@ -52,6 +59,8 @@
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.3s;
+    font-weight: 700;      /* более жирный */
+    font-style: italic;    /* курсив */
   }
   nav button.category-btn.active,
   nav button.category-btn:hover {
@@ -65,7 +74,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(255,255,255,0.85);
+    /* Единый фон с меню — прозрачный белый 10% */
+    background-color: rgba(255, 255, 255, 0.1);
     position: relative;
   }
   #cart {
@@ -242,6 +252,7 @@
     nav {
       width: 140px;
       padding: 10px 5px;
+      background-color: rgba(255, 255, 255, 0.1);
     }
     nav h2 {
       font-size: 16px;
@@ -250,6 +261,8 @@
     nav button.category-btn {
       font-size: 14px;
       padding: 8px 10px;
+      font-weight: 700;
+      font-style: italic;
     }
     #cart {
       left: 140px;
@@ -321,11 +334,6 @@
         <button id="close-desc-btn">Закрыть</button>
       </div>
     </div>
-
-    <!-- Кнопка для отправки данных боту -->
-    <button id="sendDataBtn" style="margin-top: 20px; padding: 10px 15px; font-size: 16px; border-radius: 8px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
-      Отправить данные боту
-    </button>
   </main>
 </div>
 
@@ -343,7 +351,6 @@
 <script>
   const tg = window.Telegram.WebApp;
   tg.expand();
-  tg.ready();
 
   const catalog = {
     tshirts: [
@@ -394,16 +401,14 @@
   const cartTotalSpan = document.getElementById('cart-total');
   const cartModalCloseBtn = cartModal.querySelector('.close-btn');
   const notification = document.getElementById('notification');
-  const sendDataBtn = document.getElementById('sendDataBtn');
 
   let currentCategory = 'tshirts';
   let currentProduct = null;
 
-  // Кэш товаров текущей категории для минимизации операций
   let cachedProducts = [];
 
   function renderProducts(category) {
-    if (cachedProducts === catalog[category]) return; // Не перерисовывать, если та же категория
+    if (cachedProducts === catalog[category]) return;
     cachedProducts = catalog[category] || [];
     productsContainer.innerHTML = '';
     productDescription.style.display = 'none';
@@ -473,7 +478,6 @@
     cartModal.style.display = 'none';
   });
 
-  // Делегирование событий удаления
   cartItemsList.addEventListener('click', e => {
     if (e.target.classList.contains('remove-btn')) {
       const id = e.target.dataset.id;
@@ -539,16 +543,6 @@
   tg.MainButton.setText('Перейти в корзину');
   tg.MainButton.onClick(() => {
     cartDiv.click();
-  });
-
-  // Отправка данных боту при нажатии кнопки
-  sendDataBtn.addEventListener('click', () => {
-    const dataToSend = JSON.stringify({
-      action: "clicked_web_app_button",
-      cart: cart,
-      total: calculateCartTotal()
-    });
-    tg.sendData(dataToSend);
   });
 </script>
 </body>
