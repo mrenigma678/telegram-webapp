@@ -6,6 +6,7 @@
 <title>Telegram Web App Магазин</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+  /* Ваши стили (оставлены без изменений для краткости) */
   * {
     box-sizing: border-box;
   }
@@ -587,7 +588,7 @@
     }, 2000);
   }
 
-  // Кнопка оплаты — отправляет данные корзины боту через Telegram Web Apps API
+  // Добавленный вами код для отправки данных корзины боту
   payBtn.addEventListener('click', () => {
     if (Object.keys(cart).length === 0) {
       showNotification('Корзина пуста, добавьте товары для оплаты');
@@ -608,6 +609,7 @@
       items: cartItems,
       total: calculateCartTotal()
     };
+    console.log("Отправка данных в бота:", dataToSend);
     tg.sendData(JSON.stringify(dataToSend));
   });
 
