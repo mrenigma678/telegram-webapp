@@ -6,14 +6,14 @@
 <title>Telegram Web App Магазин</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  /* Ваш CSS без изменений */
+  /* Ваш CSS из предыдущих сообщений, полный и без изменений */
   * {
     box-sizing: border-box;
   }
   body, html {
     margin: 0; padding: 0; height: 100%;
     font-family: Arial, sans-serif;
-    background: url('your-background-image.jpeg') no-repeat center center fixed;
+    background: url('your-background-image.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #222;
     display: flex;
@@ -507,7 +507,6 @@
     if (cart[currentProduct.id]) {
       cart[currentProduct.id].count++;
     } else {
-      // Добавляем в корзину с нужными полями для оплаты
       cart[currentProduct.id] = {
         id: currentProduct.id,
         name: currentProduct.name,
