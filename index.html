@@ -6,7 +6,7 @@
   <title>Telegram Web Shop</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* Стили без изменений */
+    /* Ваши стили без изменений */
   </style>
 </head>
 <body>
@@ -96,7 +96,7 @@
     tg.MainButton.onClick(() => {
       const items = Object.values(cart).map(item => ({
         label: item.name,
-        amount: item.price * 100 * item.count, // сумма в копейках (целое число)
+        amount: item.price * 100 * item.count, // в копейках
         quantity: item.count
       }));
 
@@ -105,6 +105,7 @@
         items: items
       };
 
+      console.log("Отправка данных в бота:", invoiceData);
       tg.sendData(JSON.stringify(invoiceData));
     });
 
