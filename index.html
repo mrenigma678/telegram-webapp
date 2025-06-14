@@ -6,7 +6,7 @@
   <title>Telegram Web Shop</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* Ваши стили без изменений */
+    /* Стили без изменений */
   </style>
 </head>
 <body>
@@ -72,7 +72,6 @@
       totalSpan.textContent = total;
       payButton.disabled = false;
 
-      // Настроить кнопку Telegram WebApp
       tg.MainButton.setText(`Оплатить ${total} ₽`);
       tg.MainButton.show();
     }
@@ -97,7 +96,7 @@
     tg.MainButton.onClick(() => {
       const items = Object.values(cart).map(item => ({
         label: item.name,
-        amount: item.price * 100 * item.count, // Telegram требует сумму в копейках (целое число)
+        amount: item.price * 100 * item.count, // сумма в копейках (целое число)
         quantity: item.count
       }));
 
