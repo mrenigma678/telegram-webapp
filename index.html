@@ -7,63 +7,6 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     /* Ваши стили без изменений */
-    body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
-      max-width: 400px;
-      margin: auto;
-      background: #f9f9f9;
-    }
-    h2 {
-      text-align: center;
-    }
-    .product {
-      border: 1px solid #ddd;
-      background: #fff;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-    }
-    .product-name {
-      font-weight: bold;
-    }
-    .product-price {
-      color: #007bff;
-    }
-    button {
-      margin-top: 5px;
-      padding: 5px 10px;
-      background: #007bff;
-      border: none;
-      color: white;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #aaa;
-      cursor: default;
-    }
-    #cart {
-      background: #fff;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-    }
-    #cart h3 {
-      margin-top: 0;
-    }
-    #cart-items {
-      margin-bottom: 10px;
-    }
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 5px;
-    }
-    #pay-button {
-      width: 100%;
-      background: #28a745;
-    }
   </style>
 </head>
 <body>
@@ -147,17 +90,14 @@
       }
     });
 
-    // Обработка клика по кнопке "Оплатить" в интерфейсе
     payButton.addEventListener("click", () => {
-      // Триггерим кнопку Telegram WebApp (которая отображается внизу)
       tg.MainButton.click();
     });
 
-    // Обработка нажатия на кнопку Telegram WebApp
     tg.MainButton.onClick(() => {
       const items = Object.values(cart).map(item => ({
         label: item.name,
-        amount: item.price * 100 * item.count, // в копейках (Telegram требует int)
+        amount: item.price * 100 * item.count, // Telegram требует сумму в копейках (целое число)
         quantity: item.count
       }));
 
