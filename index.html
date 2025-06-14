@@ -3,633 +3,221 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Telegram Web App Магазин</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>Telegram Web Shop</title>
 <style>
-  /* Ваш CSS из предыдущих сообщений */
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0; height: 100%;
+  body {
     font-family: Arial, sans-serif;
-    background: url('your-background-image.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #222;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+    background: var(--tg-theme-bg-color, #fff);
+    color: var(--tg-theme-text-color, #000);
+    margin: 20px;
   }
-  #app {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-    overflow: hidden;
-    background-color: transparent;
-    position: relative;
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
   }
-  nav {
-    width: 228.8px;
-    background-color: rgba(211, 211, 211, 0.4);
-    border-right: none;
-    padding: 15px 10px;
-    display: flex;
-    flex-direction: column;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-  }
-  nav .logo-container {
-    width: 100%;
-    height: 80px;
-    margin-bottom: 15px;
+  .product-list {
     display: flex;
     justify-content: center;
-    align-items: center;
-  }
-  nav .logo-container img {
-    max-height: 70px;
-    max-width: 100%;
-    object-fit: contain;
-  }
-  nav button.category-btn {
-    background: none;
-    border: none;
-    padding: 10px 15px;
-    margin: 5px 0;
-    text-align: left;
-    font-size: 13.44px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.3s, color 0.3s;
-    font-weight: 700;
-    font-style: normal;
-    color: black;
-  }
-  nav button.category-btn.active,
-  nav button.category-btn:hover {
-    background-color: #2f2f2f;
-    color: white;
-  }
-  main {
-    flex: 1;
-    padding: 20px 20px 100px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: transparent;
-    position: relative;
-  }
-  #products {
-    width: 100%;
-    max-width: 900px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
     gap: 20px;
-    justify-items: center;
+    margin-bottom: 30px;
   }
-  .product-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    width: 156px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 10px;
-    cursor: pointer;
-    user-select: none;
-    transition: transform 0.2s;
-  }
-  .product-card:hover {
-    transform: scale(1.03);
-  }
-  .product-card img {
-    width: 100%;
-    height: 96px;
-    object-fit: contain;
+  .product {
+    border: 1px solid #ccc;
     border-radius: 8px;
-    margin-bottom: 10px;
-    background: #f9f9f9;
-  }
-  .product-name {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 6px;
+    padding: 15px;
+    width: 180px;
     text-align: center;
-    word-wrap: break-word;
+    background: var(--tg-theme-button-color, #f0f0f0);
+    color: var(--tg-theme-button-text-color, #000);
   }
-  .product-price {
-    color: #2f2f2f;
-    font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 14px;
+  .product img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin-bottom: 10px;
   }
-  #product-description {
-    max-width: 900px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    padding: 20px;
-    margin-top: 20px;
-  }
-  #product-description h3 {
-    margin-top: 0;
-  }
-  #product-description p {
-    margin-bottom: 15px;
-    line-height: 1.4;
-  }
-  #product-description .buttons-container {
-    display: flex;
-    gap: 10px;
-  }
-  #product-description button {
-    background: #2f2f2f;
+  .product button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-weight: 600;
     border: none;
-    color: white;
-    padding: 5px 8px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 10px;
-    min-width: 100px;
-    flex-shrink: 0;
-    transition: background-color 0.3s;
+    background: var(--tg-theme-button-color, #0088cc);
+    color: var(--tg-theme-button-text-color, #fff);
   }
-  #product-description button#close-desc-btn {
-    background: #555555;
-    color: white;
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-  #product-description button:hover {
-    background-color: #1f1f1f;
-  }
-  #notification {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #2f2f2f;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 6px;
-    font-size: 14px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 200;
-  }
-  #cart {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #2f2f2f;
-    color: white;
-    font-weight: 700;
-    padding: 10px 25px;
-    border-radius: 15px 15px 0 0;
-    cursor: pointer;
-    user-select: none;
-    z-index: 1000;
-    height: 50px;
-    line-height: 30px;
-    white-space: nowrap;
-    font-size: 16px;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-  }
-  #cart:hover {
-    background-color: #1f1f1f;
-  }
-  #pay-btn {
-    background: #2f2f2f;
-    border: none;
-    color: white;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-  }
-  #pay-btn:hover {
-    background-color: #1f1f1f;
-  }
-  #cart-modal {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1100;
-  }
-  #cart-modal .modal-content {
-    background: white;
-    border-radius: 10px;
+  .cart {
     max-width: 400px;
-    width: 90%;
-    padding: 20px;
-    max-height: 80vh;
-    overflow-y: auto;
+    margin: 0 auto;
+    border-top: 2px solid var(--tg-theme-button-color, #0088cc);
+    padding-top: 15px;
   }
-  #cart-modal h3 {
-    margin-top: 0;
+  .cart h2 {
+    text-align: center;
+    margin-bottom: 15px;
   }
-  #cart-modal ul {
+  .cart-items {
     list-style: none;
     padding-left: 0;
     margin-bottom: 15px;
   }
-  #cart-modal ul li {
-    margin-bottom: 8px;
+  .cart-items li {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    margin-bottom: 8px;
   }
-  #cart-modal ul li button.remove-btn {
-    background: #555555;
-    border: none;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
+  .cart-total {
+    font-weight: 700;
+    text-align: right;
+    margin-bottom: 15px;
   }
-  #cart-modal button.close-btn {
-    background: #2f2f2f;
+  .pay-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+    font-size: 18px;
+    font-weight: 700;
     border: none;
-    color: white;
-    padding: 10px 15px;
     border-radius: 6px;
+    background: var(--tg-theme-button-color, #0088cc);
+    color: var(--tg-theme-button-text-color, #fff);
     cursor: pointer;
-    font-size: 16px;
-  }
-  @media (max-width: 768px) {
-    nav {
-      width: 148.64px;
-      padding: 10px 5px;
-      background-color: rgba(211, 211, 211, 0.4);
-    }
-    nav .logo-container {
-      height: 60px;
-      margin-bottom: 10px;
-    }
-    nav .logo-container img {
-      max-height: 50px;
-    }
-    nav button.category-btn {
-      font-size: 10.75px;
-      padding: 8px 10px;
-      font-weight: 700;
-      font-style: normal;
-      color: black;
-    }
-    nav button.category-btn.active,
-    nav button.category-btn:hover {
-      background-color: #2f2f2f;
-      color: white;
-    }
-    #cart {
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 8px 20px;
-      height: 45px;
-      line-height: 25px;
-      font-size: 14px;
-      border-radius: 12px 12px 0 0;
-    }
-    #pay-btn {
-      padding: 5px 12px;
-      font-size: 12px;
-    }
-    #products {
-      max-width: 100%;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 15px;
-    }
-    .product-card {
-      width: 110px;
-      padding: 10px 7px;
-    }
-    .product-card img {
-      height: 66px;
-    }
-    .product-name {
-      font-size: 11px;
-    }
-    .product-price {
-      font-size: 11px;
-      color: #2f2f2f;
-    }
-    #product-description {
-      max-width: 100%;
-      padding: 15px;
-      font-size: 14px;
-      background: white;
-    }
-    #product-description .buttons-container {
-      flex-direction: column;
-      gap: 8px;
-    }
-    #product-description button {
-      padding: 4px 7px;
-      font-size: 9px;
-      min-width: 100%;
-      background: #2f2f2f;
-      color: white;
-    }
-    #product-description button#close-desc-btn {
-      min-width: 100%;
-      background: #555555;
-      color: white;
-    }
-    #cart-modal ul li button.remove-btn {
-      background: #555555;
-    }
-    #cart-modal button.close-btn {
-      background: #2f2f2f;
-    }
   }
 </style>
 </head>
 <body>
-<div id="app">
-  <nav>
-    <div class="logo-container">
-      <img src="logo.png" alt="Логотип" />
-    </div>
-    <button class="category-btn active" data-category="tshirts">Футболки</button>
-    <button class="category-btn" data-category="hoodies">Худи, свитшоты</button>
-    <button class="category-btn" data-category="caps">Кепки, панамы</button>
-    <button class="category-btn" data-category="backpacks">Рюкзаки</button>
-    <button class="category-btn" data-category="stationery">Канцелярия</button>
-    <button class="category-btn" data-category="powerbanks">Powerbank</button>
-    <button class="category-btn" data-category="bottles">Бутылки, кружки</button>
-  </nav>
-  <main>
-    <div id="products"></div>
-    <div id="product-description" style="display:none;">
-      <h3 id="desc-name"></h3>
-      <p id="desc-text"></p>
-      <p><b>Цена: <span id="desc-price"></span> ₽</b></p>
-      <div class="buttons-container">
-        <button id="add-to-cart-btn">Добавить в корзину</button>
-        <button id="close-desc-btn">Закрыть</button>
-      </div>
-    </div>
-  </main>
+
+<h1>Простой интернет-магазин для Telegram Web</h1>
+
+<div class="product-list" id="product-list">
+  <!-- Товары будут вставлены скриптом -->
 </div>
 
-<div id="cart">
-  <span id="cart-text">Корзина: 0 ₽ (Показать)</span>
-  <button id="pay-btn">Оплатить</button>
+<div class="cart">
+  <h2>Корзина</h2>
+  <ul class="cart-items" id="cart-items">
+    <li>Корзина пуста</li>
+  </ul>
+  <div class="cart-total" id="cart-total">Итого: 0 ₽</div>
+  <button class="pay-btn" id="pay-btn" disabled>Оплатить</button>
 </div>
 
-<div id="notification"></div>
-
-<div id="cart-modal">
-  <div class="modal-content">
-    <h3>Корзина</h3>
-    <ul id="cart-items-list"></ul>
-    <p><b>Итого: <span id="cart-total"></span> ₽</b></p>
-    <button class="close-btn">Закрыть</button>
-  </div>
-</div>
-
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
   const tg = window.Telegram.WebApp;
-  tg.expand();
-  tg.ready();
+  tg.expand(); // расширяем окно под контент
 
-  const catalog = {
-    tshirts: [
-      {id: 'tclassic', name: 'Футболка Classic', price: 1200, img: 'https://via.placeholder.com/260x160?text=Футболка+Classic', description: 'Классическая футболка из хлопка, удобная и стильная.'},
-      {id: 'toversize', name: 'Футболка Oversize', price: 1500, img: 'https://via.placeholder.com/260x160?text=Футболка+Oversize', description: 'Свободная футболка oversize для комфортного ношения.'},
-      {id: 'tpola', name: 'Футболка Pola', price: 1300, img: 'https://via.placeholder.com/260x160?text=Футболка+Pola', description: 'Футболка с поло воротником, подходит для повседневной носки.'},
-    ],
-    hoodies: [
-      {id: 'hoodie', name: 'Худи', price: 2500, img: 'https://via.placeholder.com/260x160?text=Худи', description: 'Тёплое худи из мягкого материала.'},
-      {id: 'sweatshirt', name: 'Свитшот', price: 2200, img: 'https://via.placeholder.com/260x160?text=Свитшот', description: 'Удобный свитшот для спорта и отдыха.'},
-    ],
-    caps: [
-      {id: 'cap', name: 'Кепки', price: 800, img: 'https://via.placeholder.com/260x160?text=Кепки', description: 'Стильные кепки для защиты от солнца.'},
-      {id: 'panama', name: 'Панамы', price: 900, img: 'https://via.placeholder.com/260x160?text=Панамы', description: 'Лёгкие панамы для лета.'},
-    ],
-    backpacks: [
-      {id: 'backpack', name: 'Рюкзак', price: 3200, img: 'https://via.placeholder.com/260x160?text=Рюкзак', description: 'Прочный рюкзак для ежедневного использования.'},
-    ],
-    stationery: [
-      {id: 'pen', name: 'Ручка', price: 150, img: 'https://via.placeholder.com/260x160?text=Ручка', description: 'Качественная шариковая ручка.'},
-      {id: 'notebooks', name: 'Блокноты', price: 300, img: 'https://via.placeholder.com/260x160?text=Блокноты', description: 'Блокноты для записей и заметок.'},
-      {id: 'diaries', name: 'Ежедневники', price: 500, img: 'https://via.placeholder.com/260x160?text=Ежедневники', description: 'Ежедневники для планирования.'},
-      {id: 'notebooks2', name: 'Блокноты 2', price: 300, img: 'https://via.placeholder.com/260x160?text=Блокноты+2', description: 'Ещё один блокнот.'},
-    ],
-    powerbanks: [
-      {id: 'powerbank', name: 'Powerbank', price: 1800, img: 'https://via.placeholder.com/260x160?text=Powerbank', description: 'Портативный аккумулятор для зарядки устройств.'},
-    ],
-    bottles: [
-      {id: 'mug', name: 'Кружка сублимационная', price: 700, img: 'https://via.placeholder.com/260x160?text=Кружка+сублимационная', description: 'Кружка для сублимационной печати.'},
-      {id: 'waterbottle', name: 'Бутылка для воды', price: 900, img: 'https://via.placeholder.com/260x160?text=Бутылка+для+воды', description: 'Удобная бутылка для воды.'},
-      {id: 'thermomug', name: 'Термокружки', price: 1200, img: 'https://via.placeholder.com/260x160?text=Термокружки', description: 'Термокружка сохраняет тепло напитка.'},
-    ],
-  };
+  // Данные товаров
+  const products = [
+    {
+      id: 1,
+      name: "Товар 1",
+      price: 500,
+      img: "https://via.placeholder.com/150?text=Товар+1"
+    },
+    {
+      id: 2,
+      name: "Товар 2",
+      price: 800,
+      img: "https://via.placeholder.com/150?text=Товар+2"
+    }
+  ];
 
+  // Корзина - объект с id товара и количеством
   const cart = {};
 
-  const categoriesBtns = document.querySelectorAll('nav button.category-btn');
-  const productsContainer = document.getElementById('products');
-  const productDescription = document.getElementById('product-description');
-  const descName = document.getElementById('desc-name');
-  const descText = document.getElementById('desc-text');
-  const descPrice = document.getElementById('desc-price');
-  const addToCartBtn = document.getElementById('add-to-cart-btn');
-  const closeDescBtn = document.getElementById('close-desc-btn');
-  const cartDiv = document.getElementById('cart');
-  const cartText = document.getElementById('cart-text');
-  const payBtn = document.getElementById('pay-btn');
-  const cartModal = document.getElementById('cart-modal');
-  const cartItemsList = document.getElementById('cart-items-list');
-  const cartTotalSpan = document.getElementById('cart-total');
-  const cartModalCloseBtn = cartModal.querySelector('.close-btn');
-  const notification = document.getElementById('notification');
+  const productListEl = document.getElementById("product-list");
+  const cartItemsEl = document.getElementById("cart-items");
+  const cartTotalEl = document.getElementById("cart-total");
+  const payBtn = document.getElementById("pay-btn");
 
-  let currentCategory = 'tshirts';
-  let currentProduct = null;
-
-  let cachedProducts = [];
-
-  function renderProducts(category) {
-    if (cachedProducts === catalog[category]) return;
-    cachedProducts = catalog[category] || [];
-    productsContainer.innerHTML = '';
-    productDescription.style.display = 'none';
-    productsContainer.style.display = 'grid';
-    cachedProducts.forEach(product => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.dataset.id = product.id;
-      card.innerHTML = `
-        <img src="${product.img}" alt="${product.name}" loading="lazy" />
-        <div class="product-name">${product.name}</div>
-        <div class="product-price">${product.price} ₽</div>
+  // Функция отрисовки товаров
+  function renderProducts() {
+    productListEl.innerHTML = "";
+    products.forEach(product => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `
+        <img src="${product.img}" alt="${product.name}" />
+        <div><strong>${product.name}</strong></div>
+        <div>Цена: ${product.price} ₽</div>
+        <button data-id="${product.id}">Добавить в корзину</button>
       `;
-      card.addEventListener('click', () => showProductDescription(product));
-      productsContainer.appendChild(card);
+      productListEl.appendChild(div);
     });
   }
 
-  function showProductDescription(product) {
-    currentProduct = product;
-    descName.textContent = product.name;
-    descText.textContent = product.description;
-    descPrice.textContent = product.price;
-    productDescription.style.display = 'block';
-    productsContainer.style.display = 'none';
-  }
-
-  closeDescBtn.addEventListener('click', () => {
-    productDescription.style.display = 'none';
-    productsContainer.style.display = 'grid';
-    currentProduct = null;
-  });
-
-  addToCartBtn.addEventListener('click', () => {
-    if (!currentProduct) return;
-    if (cart[currentProduct.id]) {
-      cart[currentProduct.id].count++;
-    } else {
-      cart[currentProduct.id] = {
-        id: currentProduct.id,
-        name: currentProduct.name,
-        price: currentProduct.price,
-        count: 1,
-      };
-    }
-    updateCartUI();
-    showNotification(`Товар "${currentProduct.name}" добавлен в корзину`);
-  });
-
-  function updateCartUI() {
-    let total = 0;
-    for (const key in cart) {
-      total += cart[key].price * cart[key].count;
-    }
-    cartText.textContent = `Корзина: ${total} ₽ (Показать)`;
-    updateMainButton();
-  }
-
-  function calculateCartTotal() {
-    let total = 0;
-    for (const key in cart) {
-      total += cart[key].price * cart[key].count;
-    }
-    return total;
-  }
-
-  cartDiv.addEventListener('click', () => {
-    renderCartModal();
-    cartModal.style.display = 'flex';
-  });
-
-  cartModalCloseBtn.addEventListener('click', () => {
-    cartModal.style.display = 'none';
-  });
-
-  cartItemsList.addEventListener('click', e => {
-    if (e.target.classList.contains('remove-btn')) {
-      const id = e.target.dataset.id;
-      removeFromCart(id);
-    }
-  });
-
-  function renderCartModal() {
-    cartItemsList.innerHTML = '';
-    if (Object.keys(cart).length === 0) {
-      const li = document.createElement('li');
-      li.textContent = 'Корзина пуста';
-      cartItemsList.appendChild(li);
-    } else {
-      const fragment = document.createDocumentFragment();
-      for (const key in cart) {
-        const item = cart[key];
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${item.name} × ${item.count} — ${item.price * item.count} ₽</span>
-          <button class="remove-btn" data-id="${item.id}" aria-label="Удалить товар">×</button>
-        `;
-        fragment.appendChild(li);
-      }
-      cartItemsList.appendChild(fragment);
-    }
-    cartTotalSpan.textContent = calculateCartTotal();
-  }
-
-  function removeFromCart(id) {
-    if (!cart[id]) return;
-    cart[id].count--;
-    if (cart[id].count <= 0) {
-      delete cart[id];
-    }
-    updateCartUI();
-    renderCartModal();
-  }
-
-  categoriesBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      categoriesBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentCategory = btn.dataset.category;
-      renderProducts(currentCategory);
-    });
-  });
-
-  // Добавляем управление MainButton и отправку данных при нажатии
-
-  function updateMainButton() {
-    if (Object.keys(cart).length === 0) {
-      tg.MainButton.hide();
-    } else {
-      tg.MainButton.setText("Оплатить");
-      tg.MainButton.show();
-    }
-  }
-
-  payBtn.addEventListener('click', () => {
-    if (Object.keys(cart).length === 0) {
-      showNotification('Корзина пуста. Добавьте товары для оплаты.');
+  // Функция обновления корзины
+  function updateCart() {
+    cartItemsEl.innerHTML = "";
+    const ids = Object.keys(cart);
+    if (ids.length === 0) {
+      cartItemsEl.innerHTML = "<li>Корзина пуста</li>";
+      cartTotalEl.textContent = "Итого: 0 ₽";
+      payBtn.disabled = true;
       return;
     }
-    const payload = JSON.stringify({ action: 'create_invoice', cart: cart });
-    tg.sendData(payload);
-  });
-
-  tg.MainButton.onClick(() => {
-    payBtn.click();
-  });
-
-  function showNotification(message) {
-    notification.textContent = message;
-    notification.style.opacity = '1';
-    notification.style.pointerEvents = 'auto';
-    clearTimeout(notification._timeout);
-    notification._timeout = setTimeout(() => {
-      notification.style.opacity = '0';
-      notification.style.pointerEvents = 'none';
-    }, 2000);
+    let total = 0;
+    ids.forEach(id => {
+      const product = products.find(p => p.id == id);
+      const qty = cart[id];
+      const itemTotal = product.price * qty;
+      total += itemTotal;
+      const li = document.createElement("li");
+      li.textContent = `${product.name} x${qty} — ${itemTotal} ₽`;
+      cartItemsEl.appendChild(li);
+    });
+    cartTotalEl.textContent = `Итого: ${total} ₽`;
+    payBtn.disabled = false;
   }
 
-  renderProducts(currentCategory);
-  updateCartUI();
-  updateMainButton();
+  // Добавление товара в корзину
+  productListEl.addEventListener("click", e => {
+    if (e.target.tagName === "BUTTON") {
+      const id = e.target.getAttribute("data-id");
+      if (!cart[id]) cart[id] = 0;
+      cart[id]++;
+      updateCart();
+    }
+  });
+
+  // Обработка кнопки оплаты
+  payBtn.addEventListener("click", () => {
+    const ids = Object.keys(cart);
+    if (ids.length === 0) return;
+
+    // Формируем описание и сумму для инвойса
+    let totalAmount = 0;
+    let description = "Оплата тестового заказа: ";
+    ids.forEach((id, i) => {
+      const product = products.find(p => p.id == id);
+      const qty = cart[id];
+      totalAmount += product.price * qty;
+      description += `${product.name} x${qty}`;
+      if (i < ids.length - 1) description += ", ";
+    });
+
+    // Создаем инвойс через Telegram WebApp API
+    // Для теста используем метод tg.sendInvoice (если доступен)
+    // Но в WebApp JS API прямого метода для создания инвойса нет,
+    // обычно инвойс создается через бота на сервере,
+    // здесь отправим данные в бота для создания инвойса.
+
+    // Отправляем данные в бота
+    tg.sendData(JSON.stringify({
+      type: "invoice",
+      amount: totalAmount,
+      description: description,
+      cart: cart
+    }));
+
+    // Можно показать пользователю уведомление
+    alert("Данные для оплаты отправлены боту. Проверьте чат Telegram.");
+  });
+
+  // Инициализация
+  renderProducts();
+  updateCart();
+
 </script>
 </body>
 </html>
