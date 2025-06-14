@@ -6,13 +6,13 @@
 <title>Telegram Web App Магазин</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+  /* Ваш CSS без изменений */
   * {
     box-sizing: border-box;
   }
   body, html {
     margin: 0; padding: 0; height: 100%;
     font-family: Arial, sans-serif;
-    /* Основной фон с картинкой */
     background: url('your-background-image.jpeg') no-repeat center center fixed;
     background-size: cover;
     color: #222;
@@ -29,8 +29,8 @@
     position: relative;
   }
   nav {
-    width: 228.8px; /* 176px + 30% ≈ 228.8px */
-    background-color: rgba(211, 211, 211, 0.4); /* светло-серый с 40% непрозрачности */
+    width: 228.8px;
+    background-color: rgba(211, 211, 211, 0.4);
     border-right: none;
     padding: 15px 10px;
     display: flex;
@@ -59,7 +59,7 @@
     padding: 10px 15px;
     margin: 5px 0;
     text-align: left;
-    font-size: 13.44px; /* 12.8px * 1.05 (увеличение на 5%) */
+    font-size: 13.44px;
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.3s, color 0.3s;
@@ -74,7 +74,7 @@
   }
   main {
     flex: 1;
-    padding: 20px 20px 100px; /* снизу отступ для корзины */
+    padding: 20px 20px 100px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -274,7 +274,7 @@
   }
   @media (max-width: 768px) {
     nav {
-      width: 148.64px; /* 228.8 * 0.65 */
+      width: 148.64px;
       padding: 10px 5px;
       background-color: rgba(211, 211, 211, 0.4);
     }
@@ -286,7 +286,7 @@
       max-height: 50px;
     }
     nav button.category-btn {
-      font-size: 10.75px; /* 13.44 * 0.8 */
+      font-size: 10.75px;
       padding: 8px 10px;
       font-weight: 700;
       font-style: normal;
@@ -365,7 +365,6 @@
 <div id="app">
   <nav>
     <div class="logo-container">
-      <!-- Замените src на вашу картинку логотипа -->
       <img src="logo.png" alt="Логотип" />
     </div>
     <button class="category-btn active" data-category="tshirts">Футболки</button>
@@ -409,6 +408,7 @@
 <script>
   const tg = window.Telegram.WebApp;
   tg.expand();
+  tg.ready();
 
   const catalog = {
     tshirts: [
@@ -507,7 +507,13 @@
     if (cart[currentProduct.id]) {
       cart[currentProduct.id].count++;
     } else {
-      cart[currentProduct.id] = {...currentProduct, count: 1};
+      // Добавляем в корзину с нужными полями для оплаты
+      cart[currentProduct.id] = {
+        id: currentProduct.id,
+        name: currentProduct.name,
+        price: currentProduct.price,
+        count: 1,
+      };
     }
     updateCartUI();
     showNotification(`Товар "${currentProduct.name}" добавлен в корзину`);
@@ -519,6 +525,7 @@
       total += cart[key].price * cart[key].count;
     }
     cartText.textContent = `Корзина: ${total} ₽ (Показать)`;
+    updateMainButton();
   }
 
   function calculateCartTotal() {
@@ -586,14 +593,29 @@
     });
   });
 
+  // Отправка данных корзины в бота для оплаты
   payBtn.addEventListener('click', () => {
     if (Object.keys(cart).length === 0) {
       showNotification('Корзина пуста. Добавьте товары для оплаты.');
       return;
     }
-    // Отправляем данные корзины на сервер через Telegram WebApp sendData
-    const payload = JSON.stringify({action: 'create_invoice', cart: cart});
+    const payload = JSON.stringify({ action: 'create_invoice', cart: cart });
     tg.sendData(payload);
+  });
+
+  // Управление MainButton в Telegram
+  function updateMainButton() {
+    if (Object.keys(cart).length === 0) {
+      tg.MainButton.hide();
+    } else {
+      tg.MainButton.setText("Оплатить");
+      tg.MainButton.show();
+    }
+  }
+
+  // Обработка нажатия на MainButton (если хотите)
+  tg.MainButton.onClick(() => {
+    payBtn.click();
   });
 
   function showNotification(message) {
@@ -609,11 +631,7 @@
 
   renderProducts(currentCategory);
   updateCartUI();
-
-  tg.MainButton.setText('Перейти в корзину');
-  tg.MainButton.onClick(() => {
-    cartDiv.click();
-  });
+  updateMainButton();
 </script>
 </body>
 </html>
