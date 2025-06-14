@@ -6,6 +6,7 @@
   <title>Telegram Web Shop</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    /* Ваши стили без изменений */
     body {
       font-family: Arial, sans-serif;
       padding: 10px;
@@ -146,22 +147,19 @@
       }
     });
 
+    // Обработка клика по кнопке "Оплатить" в интерфейсе
     payButton.addEventListener("click", () => {
-      // Для удобства, триггерим кнопку Telegram WebApp
+      // Триггерим кнопку Telegram WebApp (которая отображается внизу)
       tg.MainButton.click();
     });
 
-    // Обработка нажатия на кнопку Telegram WebApp для создания инвойса
+    // Обработка нажатия на кнопку Telegram WebApp
     tg.MainButton.onClick(() => {
       const items = Object.values(cart).map(item => ({
         label: item.name,
         amount: item.price * 100 * item.count, // в копейках (Telegram требует int)
         quantity: item.count
       }));
-
-      // Отправляем данные в бота через метод sendInvoice
-      // Для этого используем Telegram WebApp SDK метод sendData (передаем JSON строку)
-      // Бот должен обработать это сообщение и создать инвойс
 
       const invoiceData = {
         type: "invoice_request",
