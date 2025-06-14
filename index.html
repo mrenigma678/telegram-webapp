@@ -6,7 +6,7 @@
 <title>Telegram Web App Магазин</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  /* Ваш CSS из предыдущих сообщений, полный и без изменений */
+  /* Ваш CSS из предыдущих сообщений */
   * {
     box-sizing: border-box;
   }
@@ -592,17 +592,8 @@
     });
   });
 
-  // Отправка данных корзины в бота для оплаты
-  payBtn.addEventListener('click', () => {
-    if (Object.keys(cart).length === 0) {
-      showNotification('Корзина пуста. Добавьте товары для оплаты.');
-      return;
-    }
-    const payload = JSON.stringify({ action: 'create_invoice', cart: cart });
-    tg.sendData(payload);
-  });
+  // Добавляем управление MainButton и отправку данных при нажатии
 
-  // Управление MainButton в Telegram
   function updateMainButton() {
     if (Object.keys(cart).length === 0) {
       tg.MainButton.hide();
@@ -612,7 +603,15 @@
     }
   }
 
-  // Обработка нажатия на MainButton (если хотите)
+  payBtn.addEventListener('click', () => {
+    if (Object.keys(cart).length === 0) {
+      showNotification('Корзина пуста. Добавьте товары для оплаты.');
+      return;
+    }
+    const payload = JSON.stringify({ action: 'create_invoice', cart: cart });
+    tg.sendData(payload);
+  });
+
   tg.MainButton.onClick(() => {
     payBtn.click();
   });
