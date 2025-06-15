@@ -6,14 +6,14 @@
 <title>Telegram Web App Магазин</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+  /* Ваш CSS без изменений */
   * {
     box-sizing: border-box;
   }
   body, html {
     margin: 0; padding: 0; height: 100%;
     font-family: Arial, sans-serif;
-    /* Основной фон с картинкой */
-    background: url('your-background-image.png') no-repeat center center fixed;
+    background: url('your-background-image.jpeg') no-repeat center center fixed;
     background-size: cover;
     color: #222;
     display: flex;
@@ -29,8 +29,8 @@
     position: relative;
   }
   nav {
-    width: 228.8px; /* 176px + 30% ≈ 228.8px */
-    background-color: rgba(211, 211, 211, 0.4); /* светло-серый с 40% непрозрачности */
+    width: 228.8px;
+    background-color: rgba(211, 211, 211, 0.4);
     border-right: none;
     padding: 15px 10px;
     display: flex;
@@ -59,7 +59,7 @@
     padding: 10px 15px;
     margin: 5px 0;
     text-align: left;
-    font-size: 13.44px; /* 12.8px * 1.05 (увеличение на 5%) */
+    font-size: 13.44px;
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.3s, color 0.3s;
@@ -74,7 +74,7 @@
   }
   main {
     flex: 1;
-    padding: 20px 20px 100px; /* снизу отступ для корзины */
+    padding: 20px 20px 100px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -200,8 +200,26 @@
     white-space: nowrap;
     font-size: 16px;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
   }
   #cart:hover {
+    background-color: #1f1f1f;
+  }
+  #pay-btn {
+    background: #2f2f2f;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  #pay-btn:hover {
     background-color: #1f1f1f;
   }
   #cart-modal {
@@ -256,7 +274,7 @@
   }
   @media (max-width: 768px) {
     nav {
-      width: 148.64px; /* 228.8 * 0.65 */
+      width: 148.64px;
       padding: 10px 5px;
       background-color: rgba(211, 211, 211, 0.4);
     }
@@ -268,7 +286,7 @@
       max-height: 50px;
     }
     nav button.category-btn {
-      font-size: 10.75px; /* 13.44 * 0.8 */
+      font-size: 10.75px;
       padding: 8px 10px;
       font-weight: 700;
       font-style: normal;
@@ -288,6 +306,10 @@
       line-height: 25px;
       font-size: 14px;
       border-radius: 12px 12px 0 0;
+    }
+    #pay-btn {
+      padding: 5px 12px;
+      font-size: 12px;
     }
     #products {
       max-width: 100%;
@@ -343,7 +365,6 @@
 <div id="app">
   <nav>
     <div class="logo-container">
-      <!-- Замените src на вашу картинку логотипа -->
       <img src="logo.png" alt="Логотип" />
     </div>
     <button class="category-btn active" data-category="tshirts">Футболки</button>
@@ -368,7 +389,10 @@
   </main>
 </div>
 
-<div id="cart">Корзина: 0 ₽ (Показать)</div>
+<div id="cart">
+  <span id="cart-text">Корзина: 0 ₽ (Показать)</span>
+  <button id="pay-btn">Оплатить</button>
+</div>
 
 <div id="notification"></div>
 
@@ -384,6 +408,7 @@
 <script>
   const tg = window.Telegram.WebApp;
   tg.expand();
+  tg.ready();
 
   const catalog = {
     tshirts: [
@@ -429,6 +454,8 @@
   const addToCartBtn = document.getElementById('add-to-cart-btn');
   const closeDescBtn = document.getElementById('close-desc-btn');
   const cartDiv = document.getElementById('cart');
+  const cartText = document.getElementById('cart-text');
+  const payBtn = document.getElementById('pay-btn');
   const cartModal = document.getElementById('cart-modal');
   const cartItemsList = document.getElementById('cart-items-list');
   const cartTotalSpan = document.getElementById('cart-total');
@@ -480,7 +507,13 @@
     if (cart[currentProduct.id]) {
       cart[currentProduct.id].count++;
     } else {
-      cart[currentProduct.id] = {...currentProduct, count: 1};
+      // Добавляем в корзину с нужными полями для оплаты
+      cart[currentProduct.id] = {
+        id: currentProduct.id,
+        name: currentProduct.name,
+        price: currentProduct.price,
+        count: 1,
+      };
     }
     updateCartUI();
     showNotification(`Товар "${currentProduct.name}" добавлен в корзину`);
@@ -491,7 +524,8 @@
     for (const key in cart) {
       total += cart[key].price * cart[key].count;
     }
-    cartDiv.textContent = `Корзина: ${total} ₽ (Показать)`;
+    cartText.textContent = `Корзина: ${total} ₽ (Показать)`;
+    updateMainButton();
   }
 
   function calculateCartTotal() {
@@ -559,6 +593,31 @@
     });
   });
 
+  // Отправка данных корзины в бота для оплаты
+  payBtn.addEventListener('click', () => {
+    if (Object.keys(cart).length === 0) {
+      showNotification('Корзина пуста. Добавьте товары для оплаты.');
+      return;
+    }
+    const payload = JSON.stringify({ action: 'create_invoice', cart: cart });
+    tg.sendData(payload);
+  });
+
+  // Управление MainButton в Telegram
+  function updateMainButton() {
+    if (Object.keys(cart).length === 0) {
+      tg.MainButton.hide();
+    } else {
+      tg.MainButton.setText("Оплатить");
+      tg.MainButton.show();
+    }
+  }
+
+  // Обработка нажатия на MainButton (если хотите)
+  tg.MainButton.onClick(() => {
+    payBtn.click();
+  });
+
   function showNotification(message) {
     notification.textContent = message;
     notification.style.opacity = '1';
@@ -572,11 +631,7 @@
 
   renderProducts(currentCategory);
   updateCartUI();
-
-  tg.MainButton.setText('Перейти в корзину');
-  tg.MainButton.onClick(() => {
-    cartDiv.click();
-  });
+  updateMainButton();
 </script>
 </body>
 </html>
