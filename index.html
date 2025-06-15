@@ -410,6 +410,8 @@
   tg.expand();
   tg.ready();
 
+
+
   const catalog = {
     tshirts: [
       {id: 'tclassic', name: 'Футболка Classic', price: 1200, img: 'https://via.placeholder.com/260x160?text=Футболка+Classic', description: 'Классическая футболка из хлопка, удобная и стильная.'},
@@ -442,6 +444,35 @@
       {id: 'thermomug', name: 'Термокружки', price: 1200, img: 'https://via.placeholder.com/260x160?text=Термокружки', description: 'Термокружка сохраняет тепло напитка.'},
     ],
   };
+
+
+// Данные корзины, которые нужно отправить
+const cartData = {
+  items: [
+    { id: 'product1', name: 'Товар 1', price: 100, quantity: 2 },
+    { id: 'product2', name: 'Товар 2', price: 50, quantity: 1 },
+  ],
+  total: 250
+};
+
+// Отправка данных на сервер бота
+fetch('https://your-server.com/create_invoice', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    // Можно добавить авторизацию, например, initData Telegram Mini App
+  },
+  body: JSON.stringify(cartData)
+})
+.then(response => response.json())
+.then(data => {
+  // data содержит ссылку на инвойс или подтверждение
+  console.log('Инвойс создан:', data);
+  // Здесь можно вызвать tg.openInvoice(data.invoiceUrl) для открытия оплаты
+})
+.catch(error => {
+  console.error('Ошибка при отправке данных:', error);
+});
 
   const cart = {};
 
