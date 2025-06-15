@@ -389,9 +389,12 @@
   </main>
 </div>
 
-<div id="cart">
-  <span id="cart-text">Корзина: 0 ₽ (Показать)</span>
-  <button id="pay-btn">Оплатить</button>
+<div id="cart" style="padding: 10px; border: 1px solid #ccc; width: 300px;">
+  <span id="cart-text" style="font-weight: bold;">Корзина: 0 ₽ (Показать)</span>
+  <button id="pay-btn" 
+          style="display: block; margin-top: 10px; padding: 10px 20px; font-size: 16px; background-color: #0088cc; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    Оплатить
+  </button>
 </div>
 
 <div id="notification"></div>
@@ -594,14 +597,34 @@
   });
 
   // Отправка данных корзины в бота для оплаты
-  payBtn.addEventListener('click', () => {
-    if (Object.keys(cart).length === 0) {
-      showNotification('Корзина пуста. Добавьте товары для оплаты.');
-      return;
-    }
-    const payload = JSON.stringify({ action: 'create_invoice', cart: cart });
-    tg.sendData(payload);
-  });
+payBtn.addEventListener('click', async () => {
+  if (Object.keys(cart).length === 0) {
+    showNotification('Корзина пуста. Добавьте товары для оплаты.');
+    return;
+  }
+  try {
+    // Можно добавить передачу суммы или состава корзины, если нужно
+    const response = await fetch('/get_invoice_link', { method: 'POST' });
+    if (!response.ok) throw new Error('Ошибка сервера');
+    const data = await response.json();
+    const invoiceLink = data.invoice_link;
+
+    window.Telegram.WebApp.openInvoice(invoiceLink, function(status) {
+      if (status === "paid") {
+        showNotification("Платёж успешно завершён!");
+        // Очистить корзину, если нужно:
+        for (const id in cart) delete cart[id];
+        updateCartUI();
+        updateMainButton();
+      } else {
+        showNotification("Платёж отменён или не прошёл.");
+      }
+    });
+  } catch (error) {
+    showNotification("Ошибка при попытке оплаты: " + error.message);
+  }
+});
+
 
   // Управление MainButton в Telegram
   function updateMainButton() {
