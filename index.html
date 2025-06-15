@@ -539,6 +539,19 @@
     return total;
   }
 
+// Когда пользователь добавляет товар
+document.getElementById('add-item-btn').addEventListener('click', () => {
+  updateCart('item1', 'Товар 1', 100, (cart['item1'] ? cart['item1'].count : 0) + 1);
+});
+
+// Когда пользователь убирает товар
+document.getElementById('remove-item-btn').addEventListener('click', () => {
+  if (cart['item1']) {
+    updateCart('item1', 'Товар 1', 100, cart['item1'].count - 1);
+  }
+});
+
+
   cartDiv.addEventListener('click', () => {
     renderCartModal();
     cartModal.style.display = 'flex';
@@ -655,6 +668,33 @@ payBtn.addEventListener('click', async () => {
   renderProducts(currentCategory);
   updateCartUI();
   updateMainButton();
+
+const tg = window.Telegram.WebApp;
+
+// Пример вашей динамической корзины — замените на реальную логику
+let cart = {};
+
+// Функция отправки данных корзины в бота
+function sendCartData() {
+  tg.sendData(JSON.stringify({ cart: cart }));
+}
+
+// Функция обновления корзины (пример)
+function updateCart(itemId, name, price, count) {
+  if (count <= 0) {
+    delete cart[itemId];
+  } else {
+    cart[itemId] = { name: name, price: price, count: count };
+  }
+  sendCartData(); // Отправляем обновлённые данные в бота
+}
+
+// При загрузке страницы можно отправить пустую корзину или текущую
+document.addEventListener('DOMContentLoaded', () => {
+  sendCartData();
+});
+
+
 </script>
 </body>
 </html>
