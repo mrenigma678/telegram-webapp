@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>Telegram Web App Магазин</title>
 <style>
-  /* Фон для всей страницы, фиксированный, не меняет размер */
   body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -17,7 +16,6 @@
     height: 100vh;
     overflow: hidden;
   }
-  /* Меню слева, белое с прозрачностью, фиксировано */
   #sidebar {
     width: 220px;
     background: rgba(255, 255, 255, 0.85);
@@ -49,8 +47,6 @@
     border-left: 4px solid black;
     font-weight: bold;
   }
-
-  /* Основной контент с отступом слева под меню */
   #content {
     margin-left: 220px;
     padding: 15px;
@@ -61,8 +57,6 @@
     flex-direction: column;
     align-items: center;
   }
-
-  /* Сетка карточек товаров */
   #product-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -71,8 +65,6 @@
     max-width: 960px;
     justify-items: center;
   }
-
-  /* Карточка товара */
   .product-card {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
@@ -104,8 +96,6 @@
     margin-bottom: 10px;
     color: black;
   }
-
-  /* Описание товара */
   #product-description {
     background: rgba(255, 255, 255, 0.9);
     max-width: 600px;
@@ -127,8 +117,6 @@
     border-radius: 4px;
     cursor: pointer;
   }
-
-  /* Корзина внизу по центру, фиксирована */
   #cart {
     position: fixed;
     bottom: 10px;
@@ -149,8 +137,6 @@
     font-weight: bold;
     color: black;
   }
-
-  /* Мобильная адаптация */
   @media (max-width: 600px) {
     #sidebar {
       width: 140px;
@@ -214,7 +200,6 @@
 </div>
 
 <script>
-  // Данные товаров с id, названием, ценой (в рублях), описанием и местом для картинок
   const PRODUCTS = {
     tshirts: [
       {id: "classic_tshirt", title: "Футболка Classic", price: 1500, img: "img/classic_tshirt.png", description: "Классическая футболка из хлопка, комфортная и стильная."},
@@ -258,7 +243,7 @@
 
   let currentCategory = 'tshirts';
   let selectedProduct = null;
-  let cart = {}; // { productId: quantity }
+  let cart = {};
 
   function renderCategory(category) {
     productDescription.style.display = 'none';
@@ -323,22 +308,18 @@
     });
     cartContent += "\nДля оплаты нажмите ОК";
     if (confirm(cartContent)) {
-      // Отправляем корзину на сервер для создания инвойса
-      Telegram.WebApp.sendData(JSON.stringify({cart: Object.entries(cart).map(([id, qty]) => ({id, quantity: qty}))}));
+      Telegram.WebApp.sendData(JSON.stringify({cart: Object.entries(cart).map(([id, quantity]) => ({id, quantity}))}));
     }
   };
 
-  // Инициализация
   renderCategory(currentCategory);
   updateCartDisplay();
 
-  // Telegram WebApp API init
   let Telegram;
   if (window.Telegram && window.Telegram.WebApp) {
     Telegram = window.Telegram;
     Telegram.WebApp.expand();
   } else {
-    // Заглушка для теста вне Telegram
     Telegram = {
       WebApp: {
         sendData: (data) => alert("Данные для оплаты отправлены:\n" + data),
