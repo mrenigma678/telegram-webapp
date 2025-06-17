@@ -1,494 +1,352 @@
+<!-- index.html - клиентская часть Telegram Web App -->
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>Telegram Web App Магазин</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  /* Ваш CSS без изменений */
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0; height: 100%;
+  /* Фон для всей страницы, фиксированный, не меняет размер */
+  body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    background: url('your-background-image.jpeg') no-repeat center center fixed;
+    background: url('your-background-image.jpg') no-repeat center center fixed;
     background-size: cover;
-    color: #222;
     display: flex;
-    flex-direction: column;
     height: 100vh;
-  }
-  #app {
-    flex: 1;
-    display: flex;
-    min-height: 0;
     overflow: hidden;
-    background-color: transparent;
-    position: relative;
   }
-  nav {
-    width: 228.8px;
-    background-color: rgba(211, 211, 211, 0.4);
-    border-right: none;
-    padding: 15px 10px;
+  /* Меню слева, белое с прозрачностью, фиксировано */
+  #sidebar {
+    width: 220px;
+    background: rgba(255, 255, 255, 0.85);
+    color: black;
+    padding: 15px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    position: sticky;
-    top: 0;
-    height: 100vh;
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
     overflow-y: auto;
   }
-  nav .logo-container {
-    width: 100%;
-    height: 80px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  #sidebar h2 {
+    margin-top: 0;
+    font-weight: normal;
   }
-  nav .logo-container img {
-    max-height: 70px;
-    max-width: 100%;
-    object-fit: contain;
-  }
-  nav button.category-btn {
+  #sidebar button {
     background: none;
     border: none;
-    padding: 10px 15px;
-    margin: 5px 0;
-    text-align: left;
-    font-size: 13.44px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.3s, color 0.3s;
-    font-weight: 700;
-    font-style: normal;
     color: black;
+    font-size: 16px;
+    padding: 10px 5px;
+    text-align: left;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: border-color 0.3s;
   }
-  nav button.category-btn.active,
-  nav button.category-btn:hover {
-    background-color: #2f2f2f;
-    color: white;
+  #sidebar button.active, #sidebar button:hover {
+    border-left: 4px solid black;
+    font-weight: bold;
   }
-  main {
-    flex: 1;
-    padding: 20px 20px 100px;
+
+  /* Основной контент с отступом слева под меню */
+  #content {
+    margin-left: 220px;
+    padding: 15px;
+    box-sizing: border-box;
+    flex-grow: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: transparent;
-    position: relative;
   }
-  #products {
-    width: 100%;
-    max-width: 900px;
+
+  /* Сетка карточек товаров */
+  #product-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    width: 100%;
+    max-width: 960px;
     justify-items: center;
   }
+
+  /* Карточка товара */
   .product-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    width: 156px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    width: 180px;
+    min-height: 280px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px 10px;
+    padding: 10px;
+    box-sizing: border-box;
     cursor: pointer;
     user-select: none;
-    transition: transform 0.2s;
-  }
-  .product-card:hover {
-    transform: scale(1.03);
   }
   .product-card img {
-    width: 100%;
-    height: 96px;
+    width: 140px;
+    height: 140px;
     object-fit: contain;
-    border-radius: 8px;
     margin-bottom: 10px;
-    background: #f9f9f9;
   }
-  .product-name {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 6px;
+  .product-card h3 {
+    font-size: 16px;
+    margin: 0 0 5px 0;
     text-align: center;
     word-wrap: break-word;
   }
-  .product-price {
-    color: #2f2f2f;
+  .product-card .price {
     font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 14px;
+    margin-bottom: 10px;
+    color: black;
   }
+
+  /* Описание товара */
   #product-description {
-    max-width: 900px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    max-width: 600px;
     margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    color: black;
+    display: none;
   }
   #product-description h3 {
     margin-top: 0;
   }
-  #product-description p {
-    margin-bottom: 15px;
-    line-height: 1.4;
-  }
-  #product-description .buttons-container {
-    display: flex;
-    gap: 10px;
-  }
   #product-description button {
-    background: #2f2f2f;
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: black;
+    color: white;
     border: none;
-    color: white;
-    padding: 5px 8px;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 10px;
-    min-width: 100px;
-    flex-shrink: 0;
-    transition: background-color 0.3s;
   }
-  #product-description button#close-desc-btn {
-    background: #555555;
-    color: white;
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-  #product-description button:hover {
-    background-color: #1f1f1f;
-  }
-  #notification {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #2f2f2f;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 6px;
-    font-size: 14px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 200;
-  }
+
+  /* Корзина внизу по центру, фиксирована */
   #cart {
     position: fixed;
-    bottom: 0;
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
-    background: #2f2f2f;
-    color: white;
-    font-weight: 700;
-    padding: 10px 25px;
-    border-radius: 15px 15px 0 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 30px;
+    padding: 10px 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
     cursor: pointer;
     user-select: none;
     z-index: 1000;
-    height: 50px;
-    line-height: 30px;
-    white-space: nowrap;
-    font-size: 16px;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
   }
-  #cart:hover {
-    background-color: #1f1f1f;
+  #cart span {
+    margin-left: 10px;
+    font-weight: bold;
+    color: black;
   }
-  #pay-btn {
-    background: #2f2f2f;
-    border: none;
-    color: white;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-  }
-  #pay-btn:hover {
-    background-color: #1f1f1f;
-  }
-  #cart-modal {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1100;
-  }
-  #cart-modal .modal-content {
-    background: white;
-    border-radius: 10px;
-    max-width: 400px;
-    width: 90%;
-    padding: 20px;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  #cart-modal h3 {
-    margin-top: 0;
-  }
-  #cart-modal ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 15px;
-  }
-  #cart-modal ul li {
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  #cart-modal ul li button.remove-btn {
-    background: #555555;
-    border: none;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  #cart-modal button.close-btn {
-    background: #2f2f2f;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  @media (max-width: 768px) {
-    nav {
-      width: 148.64px;
+
+  /* Мобильная адаптация */
+  @media (max-width: 600px) {
+    #sidebar {
+      width: 140px;
       padding: 10px 5px;
-      background-color: rgba(211, 211, 211, 0.4);
-    }
-    nav .logo-container {
-      height: 60px;
-      margin-bottom: 10px;
-    }
-    nav .logo-container img {
-      max-height: 50px;
-    }
-    nav button.category-btn {
-      font-size: 10.75px;
-      padding: 8px 10px;
-      font-weight: 700;
-      font-style: normal;
-      color: black;
-    }
-    nav button.category-btn.active,
-    nav button.category-btn:hover {
-      background-color: #2f2f2f;
-      color: white;
-    }
-    #cart {
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 8px 20px;
-      height: 45px;
-      line-height: 25px;
       font-size: 14px;
-      border-radius: 12px 12px 0 0;
     }
-    #pay-btn {
-      padding: 5px 12px;
-      font-size: 12px;
+    #content {
+      margin-left: 140px;
+      padding: 10px 8px;
     }
-    #products {
+    #product-list {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       max-width: 100%;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 15px;
+      gap: 10px;
     }
     .product-card {
-      width: 110px;
-      padding: 10px 7px;
+      width: 140px;
+      min-height: 240px;
+      padding: 8px;
     }
     .product-card img {
-      height: 66px;
-    }
-    .product-name {
-      font-size: 11px;
-    }
-    .product-price {
-      font-size: 11px;
-      color: #2f2f2f;
+      width: 110px;
+      height: 110px;
+      margin-bottom: 8px;
     }
     #product-description {
-      max-width: 100%;
-      padding: 15px;
+      max-width: 90vw;
+      padding: 10px;
+    }
+    #cart {
+      padding: 8px 15px;
       font-size: 14px;
-      background: white;
-    }
-    #product-description .buttons-container {
-      flex-direction: column;
-      gap: 8px;
-    }
-    #product-description button {
-      padding: 4px 7px;
-      font-size: 9px;
-      min-width: 100%;
-      background: #2f2f2f;
-      color: white;
-    }
-    #product-description button#close-desc-btn {
-      min-width: 100%;
-      background: #555555;
-      color: white;
-    }
-    #cart-modal ul li button.remove-btn {
-      background: #555555;
-    }
-    #cart-modal button.close-btn {
-      background: #2f2f2f;
     }
   }
 </style>
 </head>
 <body>
 
-  <h1>Каталог товаров</h1>
-  <div class="products">
-    <div class="product" data-name="Товар 1" data-price="100.5">
-      <h3>Товар 1</h3>
-      <p>Описание товара 1</p>
-      <span>Цена: 100.5 ₽</span><br />
-      <button class="add-to-cart">Добавить в корзину</button>
-    </div>
-    <div class="product" data-name="Товар 2" data-price="50">
-      <h3>Товар 2</h3>
-      <p>Описание товара 2</p>
-      <span>Цена: 50 ₽</span><br />
-      <button class="add-to-cart">Добавить в корзину</button>
-    </div>
+<div id="sidebar">
+  <h2>Категории</h2>
+  <button class="category-btn active" data-category="tshirts">Футболки</button>
+  <button class="category-btn" data-category="hoodies">Худи, свитшоты</button>
+  <button class="category-btn" data-category="caps">Кепки, панамы</button>
+  <button class="category-btn" data-category="backpacks">Рюкзаки</button>
+  <button class="category-btn" data-category="stationery">Канцелярия</button>
+  <button class="category-btn" data-category="powerbank">Powerbank</button>
+  <button class="category-btn" data-category="mugs">Бутылки, кружки</button>
+</div>
+
+<div id="content">
+  <div id="product-list"></div>
+  <div id="product-description">
+    <h3 id="desc-title"></h3>
+    <p id="desc-text"></p>
+    <button id="desc-add-to-cart">Добавить в корзину</button>
   </div>
+</div>
 
-  <h2>Корзина</h2>
-  <table class="cart">
-    <thead>
-      <tr>
-        <th>Товар</th>
-        <th>Количество</th>
-        <th>Цена за шт.</th>
-        <th>Итого</th>
-        <th>Удалить</th>
-      </tr>
-    </thead>
-    <tbody id="cart-body">
-      <!-- Товары будут добавляться сюда -->
-    </tbody>
-  </table>
-  <div>
-    <strong>Общая стоимость: <span id="total-price">0 ₽</span></strong>
-  </div>
-  <button id="pay-btn" disabled>Оплатить</button>
+<div id="cart" title="Открыть корзину">
+  🛒 <span id="cart-total">0 ₽</span>
+</div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+<script>
+  // Данные товаров с id, названием, ценой (в рублях), описанием и местом для картинок
+  const PRODUCTS = {
+    tshirts: [
+      {id: "classic_tshirt", title: "Футболка Classic", price: 1500, img: "img/classic_tshirt.png", description: "Классическая футболка из хлопка, комфортная и стильная."},
+      {id: "oversize_tshirt", title: "Футболка Oversize", price: 1800, img: "img/oversize_tshirt.png", description: "Свободная футболка oversize для модного образа."},
+      {id: "pola_tshirt", title: "Футболка Pola", price: 1700, img: "img/pola_tshirt.png", description: "Футболка с поло воротником, элегантный стиль."}
+    ],
+    hoodies: [
+      {id: "hoodie", title: "Худи", price: 3500, img: "img/hoodie.png", description: "Теплое худи с капюшоном, идеально для прохладной погоды."},
+      {id: "sweatshirt", title: "Свитшот", price: 3000, img: "img/sweatshirt.png", description: "Удобный свитшот из мягкого материала."}
+    ],
+    caps: [
+      {id: "cap", title: "Кепки", price: 1200, img: "img/cap.png", description: "Стильные кепки для любого образа."},
+      {id: "panama", title: "Панамы", price: 1300, img: "img/panama.png", description: "Легкие панамы для защиты от солнца."}
+    ],
+    backpacks: [
+      {id: "backpack", title: "Рюкзак", price: 4500, img: "img/backpack.png", description: "Прочный рюкзак с большим количеством отделений."}
+    ],
+    stationery: [
+      {id: "pen", title: "Ручка", price: 500, img: "img/pen.png", description: "Качественная ручка для письма."},
+      {id: "notebooks", title: "Блокноты", price: 700, img: "img/notebooks.png", description: "Блокноты для записей и идей."},
+      {id: "planners", title: "Ежедневники", price: 900, img: "img/planners.png", description: "Ежедневники для планирования дня."}
+    ],
+    powerbank: [
+      {id: "powerbank", title: "Powerbank", price: 4000, img: "img/powerbank.png", description: "Портативный аккумулятор для зарядки устройств."}
+    ],
+    mugs: [
+      {id: "mug", title: "Кружка сублимационная", price: 1100, img: "img/mug.png", description: "Кружка для сублимационной печати."},
+      {id: "water_bottle", title: "Бутылка для воды", price: 1500, img: "img/water_bottle.png", description: "Бутылка для воды с удобной крышкой."},
+      {id: "thermo_mug", title: "Термокружки", price: 1600, img: "img/thermo_mug.png", description: "Термокружка для поддержания температуры напитка."}
+    ]
+  };
 
-    let cartItems = [];
+  const categoryButtons = document.querySelectorAll('.category-btn');
+  const productList = document.getElementById('product-list');
+  const productDescription = document.getElementById('product-description');
+  const descTitle = document.getElementById('desc-title');
+  const descText = document.getElementById('desc-text');
+  const descAddToCartBtn = document.getElementById('desc-add-to-cart');
+  const cartElem = document.getElementById('cart');
+  const cartTotalElem = document.getElementById('cart-total');
 
-    function updateCart() {
-      const tbody = document.getElementById('cart-body');
-      tbody.innerHTML = '';
+  let currentCategory = 'tshirts';
+  let selectedProduct = null;
+  let cart = {}; // { productId: quantity }
 
-      let total = 0;
-      cartItems.forEach((item, index) => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
+  function renderCategory(category) {
+    productDescription.style.display = 'none';
+    productList.innerHTML = '';
+    const products = PRODUCTS[category] || [];
+    products.forEach(prod => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.dataset.id = prod.id;
+      card.innerHTML = `
+        <img src="${prod.img}" alt="${prod.title}" />
+        <h3>${prod.title}</h3>
+        <div class="price">${prod.price} ₽</div>
+      `;
+      card.onclick = () => showDescription(prod);
+      productList.appendChild(card);
+    });
+  }
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${item.name}</td>
-          <td><input type="number" min="1" value="${item.quantity}" data-index="${index}" class="item-quantity"></td>
-          <td>${item.price} ₽</td>
-          <td>${itemTotal.toFixed(2)} ₽</td>
-          <td><button class="remove-item" data-index="${index}">Удалить</button></td>
-        `;
-        tbody.appendChild(row);
-      });
+  function showDescription(product) {
+    selectedProduct = product;
+    descTitle.textContent = product.title;
+    descText.textContent = product.description;
+    productDescription.style.display = 'block';
+  }
 
-      document.getElementById('total-price').textContent = total.toFixed(2) + ' ₽';
-      document.getElementById('pay-btn').disabled = cartItems.length === 0;
+  function updateCartDisplay() {
+    const total = Object.entries(cart).reduce((sum, [id, qty]) => {
+      const p = Object.values(PRODUCTS).flat().find(pr => pr.id === id);
+      return sum + (p ? p.price * qty : 0);
+    }, 0);
+    cartTotalElem.textContent = total + ' ₽';
+  }
+
+  descAddToCartBtn.onclick = () => {
+    if (!selectedProduct) return;
+    cart[selectedProduct.id] = (cart[selectedProduct.id] || 0) + 1;
+    updateCartDisplay();
+    alert(`Добавлено в корзину: ${selectedProduct.title}`);
+  };
+
+  categoryButtons.forEach(btn => {
+    btn.onclick = () => {
+      categoryButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = btn.dataset.category;
+      renderCategory(currentCategory);
+    };
+  });
+
+  cartElem.onclick = () => {
+    if (Object.keys(cart).length === 0) {
+      alert("Корзина пуста");
+      return;
     }
-
-    function addToCart(name, price) {
-      const existing = cartItems.find(item => item.name === name);
-      if (existing) {
-        existing.quantity++;
-      } else {
-        cartItems.push({ name, price, quantity: 1 });
+    let cartContent = "Ваша корзина:\n\n";
+    Object.entries(cart).forEach(([id, qty]) => {
+      const p = Object.values(PRODUCTS).flat().find(pr => pr.id === id);
+      if (p) {
+        cartContent += `${p.title} x${qty} = ${p.price * qty} ₽\n`;
       }
-      updateCart();
+    });
+    cartContent += "\nДля оплаты нажмите ОК";
+    if (confirm(cartContent)) {
+      // Отправляем корзину на сервер для создания инвойса
+      Telegram.WebApp.sendData(JSON.stringify({cart: Object.entries(cart).map(([id, qty]) => ({id, quantity: qty}))}));
     }
+  };
 
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-      button.addEventListener('click', () => {
-        const product = button.closest('.product');
-        const name = product.dataset.name;
-        const price = parseFloat(product.dataset.price);
-        addToCart(name, price);
-      });
-    });
+  // Инициализация
+  renderCategory(currentCategory);
+  updateCartDisplay();
 
-    document.getElementById('cart-body').addEventListener('input', event => {
-      if (event.target.classList.contains('item-quantity')) {
-        const index = event.target.dataset.index;
-        let val = parseInt(event.target.value);
-        if (val < 1 || isNaN(val)) val = 1;
-        cartItems[index].quantity = val;
-        updateCart();
+  // Telegram WebApp API init
+  let Telegram;
+  if (window.Telegram && window.Telegram.WebApp) {
+    Telegram = window.Telegram;
+    Telegram.WebApp.expand();
+  } else {
+    // Заглушка для теста вне Telegram
+    Telegram = {
+      WebApp: {
+        sendData: (data) => alert("Данные для оплаты отправлены:\n" + data),
+        expand: () => {},
       }
-    });
+    };
+  }
+</script>
 
-    document.getElementById('cart-body').addEventListener('click', event => {
-      if (event.target.classList.contains('remove-item')) {
-        const index = event.target.dataset.index;
-        cartItems.splice(index, 1);
-        updateCart();
-      }
-    });
-
-    document.getElementById('pay-btn').addEventListener('click', async () => {
-      if (cartItems.length === 0) return;
-
-      try {
-        const response = await fetch('https://твой_сервер/create_invoice', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: cartItems })
-        });
-        const data = await response.json();
-
-        if (data.invoiceUrl) {
-          tg.openInvoice(data.invoiceUrl);
-        } else {
-          alert('Ошибка при создании платежа');
-        }
-      } catch (err) {
-        console.error('Ошибка:', err);
-        alert('Ошибка сети или сервера');
-      }
-    });
-
-    updateCart();
-  </script>
 </body>
 </html>
