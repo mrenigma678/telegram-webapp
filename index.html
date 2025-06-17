@@ -410,8 +410,6 @@
   tg.expand();
   tg.ready();
 
-
-
   const catalog = {
     tshirts: [
       {id: 'tclassic', name: 'Футболка Classic', price: 1200, img: 'https://via.placeholder.com/260x160?text=Футболка+Classic', description: 'Классическая футболка из хлопка, удобная и стильная.'},
@@ -422,57 +420,8 @@
       {id: 'hoodie', name: 'Худи', price: 2500, img: 'https://via.placeholder.com/260x160?text=Худи', description: 'Тёплое худи из мягкого материала.'},
       {id: 'sweatshirt', name: 'Свитшот', price: 2200, img: 'https://via.placeholder.com/260x160?text=Свитшот', description: 'Удобный свитшот для спорта и отдыха.'},
     ],
-    caps: [
-      {id: 'cap', name: 'Кепки', price: 800, img: 'https://via.placeholder.com/260x160?text=Кепки', description: 'Стильные кепки для защиты от солнца.'},
-      {id: 'panama', name: 'Панамы', price: 900, img: 'https://via.placeholder.com/260x160?text=Панамы', description: 'Лёгкие панамы для лета.'},
-    ],
-    backpacks: [
-      {id: 'backpack', name: 'Рюкзак', price: 3200, img: 'https://via.placeholder.com/260x160?text=Рюкзак', description: 'Прочный рюкзак для ежедневного использования.'},
-    ],
-    stationery: [
-      {id: 'pen', name: 'Ручка', price: 150, img: 'https://via.placeholder.com/260x160?text=Ручка', description: 'Качественная шариковая ручка.'},
-      {id: 'notebooks', name: 'Блокноты', price: 300, img: 'https://via.placeholder.com/260x160?text=Блокноты', description: 'Блокноты для записей и заметок.'},
-      {id: 'diaries', name: 'Ежедневники', price: 500, img: 'https://via.placeholder.com/260x160?text=Ежедневники', description: 'Ежедневники для планирования.'},
-      {id: 'notebooks2', name: 'Блокноты 2', price: 300, img: 'https://via.placeholder.com/260x160?text=Блокноты+2', description: 'Ещё один блокнот.'},
-    ],
-    powerbanks: [
-      {id: 'powerbank', name: 'Powerbank', price: 1800, img: 'https://via.placeholder.com/260x160?text=Powerbank', description: 'Портативный аккумулятор для зарядки устройств.'},
-    ],
-    bottles: [
-      {id: 'mug', name: 'Кружка сублимационная', price: 700, img: 'https://via.placeholder.com/260x160?text=Кружка+сублимационная', description: 'Кружка для сублимационной печати.'},
-      {id: 'waterbottle', name: 'Бутылка для воды', price: 900, img: 'https://via.placeholder.com/260x160?text=Бутылка+для+воды', description: 'Удобная бутылка для воды.'},
-      {id: 'thermomug', name: 'Термокружки', price: 1200, img: 'https://via.placeholder.com/260x160?text=Термокружки', description: 'Термокружка сохраняет тепло напитка.'},
-    ],
+    // ... остальные категории
   };
-
-
-// Данные корзины, которые нужно отправить
-const cartData = {
-  items: [
-    { id: 'product1', name: 'Товар 1', price: 100, quantity: 2 },
-    { id: 'product2', name: 'Товар 2', price: 50, quantity: 1 },
-  ],
-  total: 250
-};
-
-// Отправка данных на сервер бота
-fetch('https://your-server.com/create_invoice', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    // Можно добавить авторизацию, например, initData Telegram Mini App
-  },
-  body: JSON.stringify(cartData)
-})
-.then(response => response.json())
-.then(data => {
-  // data содержит ссылку на инвойс или подтверждение
-  console.log('Инвойс создан:', data);
-  // Здесь можно вызвать tg.openInvoice(data.invoiceUrl) для открытия оплаты
-})
-.catch(error => {
-  console.error('Ошибка при отправке данных:', error);
-});
 
   const cart = {};
 
@@ -538,7 +487,6 @@ fetch('https://your-server.com/create_invoice', {
     if (cart[currentProduct.id]) {
       cart[currentProduct.id].count++;
     } else {
-      // Добавляем в корзину с нужными полями для оплаты
       cart[currentProduct.id] = {
         id: currentProduct.id,
         name: currentProduct.name,
@@ -556,7 +504,7 @@ fetch('https://your-server.com/create_invoice', {
       total += cart[key].price * cart[key].count;
     }
     cartText.textContent = `Корзина: ${total} ₽ (Показать)`;
-    updateMainButton();
+    payBtn.disabled = total === 0;
   }
 
   function calculateCartTotal() {
@@ -615,38 +563,44 @@ fetch('https://your-server.com/create_invoice', {
     renderCartModal();
   }
 
-  categoriesBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      categoriesBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentCategory = btn.dataset.category;
-      renderProducts(currentCategory);
-    });
-  });
-
-  // Отправка данных корзины в бота для оплаты
-  payBtn.addEventListener('click', () => {
+  // Новый обработчик кнопки оплаты с fetch и openInvoice
+  payBtn.addEventListener('click', async () => {
     if (Object.keys(cart).length === 0) {
       showNotification('Корзина пуста. Добавьте товары для оплаты.');
       return;
     }
-    const payload = JSON.stringify({ action: 'create_invoice', cart: cart });
-    tg.sendData(payload);
-  });
 
-  // Управление MainButton в Telegram
-  function updateMainButton() {
-    if (Object.keys(cart).length === 0) {
-      tg.MainButton.hide();
-    } else {
-      tg.MainButton.setText("Оплатить");
-      tg.MainButton.show();
+    // Подготовка данных для сервера
+    const cartData = {
+      items: Object.values(cart).map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.count
+      })),
+      total: calculateCartTotal()
+    };
+
+    try {
+      const response = await fetch('https://mrenigma678.github.io/telegram-webapp/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(cartData)
+      });
+
+      if (!response.ok) throw new Error('Ошибка сети при создании инвойса');
+
+      const data = await response.json();
+
+      if (!data.invoiceUrl) throw new Error('Ссылка на оплату не получена');
+
+      // Открываем оплату через Telegram WebApp
+      tg.openInvoice(data.invoiceUrl);
+
+    } catch (error) {
+      showNotification('Ошибка при создании платежа: ' + error.message);
+      console.error(error);
     }
-  }
-
-  // Обработка нажатия на MainButton (если хотите)
-  tg.MainButton.onClick(() => {
-    payBtn.click();
   });
 
   function showNotification(message) {
@@ -657,12 +611,13 @@ fetch('https://your-server.com/create_invoice', {
     notification._timeout = setTimeout(() => {
       notification.style.opacity = '0';
       notification.style.pointerEvents = 'none';
-    }, 2000);
+    }, 3000);
   }
 
+  // Инициализация
   renderProducts(currentCategory);
   updateCartUI();
-  updateMainButton();
 </script>
+
 </body>
 </html>
