@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
-    <title>Мини-магазин Telegram WebApp</title>
+    <title>Мини-магазин Telegram WebApp с openInvoice</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
@@ -48,6 +48,10 @@
             background-color: #aaa;
             cursor: not-allowed;
         }
+        #message {
+            margin-top: 1rem;
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +71,7 @@
         <div id="cart-items">Корзина пуста</div>
         <div><strong>Итого: </strong><span id="total">0.00 ₽</span></div>
         <button id="pay-button" disabled>Оплатить</button>
+        <div id="message"></div>
     </div>
 
 <script>
@@ -116,7 +121,7 @@
     });
 
     document.getElementById("pay-button").addEventListener("click", () => {
-        // Отправляем данные корзины боту через sendData (JSON)
+        // Формируем данные корзины и сумму
         const cartForSend = {};
         let total = 0;
         for (const [id, qty] of Object.entries(cart)) {
@@ -129,7 +134,24 @@
             cart: cartForSend,
             total: total,
         };
+        // Отправляем данные боту
         tg.sendData(JSON.stringify(data));
+    });
+
+    // Обработка входящих сообщений от бота (с JSON с payload и ценами)
+    tg.onEvent('message', (message) => {
+        try {
+            const data = JSON.parse(message.text);
+            if (data.payload && data.prices && data.total) {
+                // Формируем URL инвойса (эмуляция)
+                // В реальности URL формируется провайдером платежей, здесь используем payload
+                const url = `https://t.me/pay?invoice_payload=${encodeURIComponent(data.payload)}`;
+                // Вызываем openInvoice с URL
+                tg.openInvoice(url);
+            }
+        } catch (e) {
+            // Не JSON — игнорируем
+        }
     });
 
     updateCartUI();
