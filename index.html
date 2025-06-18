@@ -1,333 +1,138 @@
-<!-- index.html - клиентская часть Telegram Web App -->
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Telegram Web App Магазин</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url('your-background-image.jpg') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-  }
-  #sidebar {
-    width: 220px;
-    background: rgba(255, 255, 255, 0.85);
-    color: black;
-    padding: 15px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0; bottom: 0; left: 0;
-    overflow-y: auto;
-  }
-  #sidebar h2 {
-    margin-top: 0;
-    font-weight: normal;
-  }
-  #sidebar button {
-    background: none;
-    border: none;
-    color: black;
-    font-size: 16px;
-    padding: 10px 5px;
-    text-align: left;
-    cursor: pointer;
-    border-left: 4px solid transparent;
-    transition: border-color 0.3s;
-  }
-  #sidebar button.active, #sidebar button:hover {
-    border-left: 4px solid black;
-    font-weight: bold;
-  }
-  #content {
-    margin-left: 220px;
-    padding: 15px;
-    box-sizing: border-box;
-    flex-grow: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  #product-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 15px;
-    width: 100%;
-    max-width: 960px;
-    justify-items: center;
-  }
-  .product-card {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
-    box-shadow: 0 0 6px rgba(0,0,0,0.1);
-    width: 180px;
-    min-height: 280px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    box-sizing: border-box;
-    cursor: pointer;
-    user-select: none;
-  }
-  .product-card img {
-    width: 140px;
-    height: 140px;
-    object-fit: contain;
-    margin-bottom: 10px;
-  }
-  .product-card h3 {
-    font-size: 16px;
-    margin: 0 0 5px 0;
-    text-align: center;
-    word-wrap: break-word;
-  }
-  .product-card .price {
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: black;
-  }
-  #product-description {
-    background: rgba(255, 255, 255, 0.9);
-    max-width: 600px;
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    color: black;
-    display: none;
-  }
-  #product-description h3 {
-    margin-top: 0;
-  }
-  #product-description button {
-    margin-top: 10px;
-    padding: 6px 12px;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  #cart {
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 30px;
-    padding: 10px 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.15);
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-    z-index: 1000;
-  }
-  #cart span {
-    margin-left: 10px;
-    font-weight: bold;
-    color: black;
-  }
-  @media (max-width: 600px) {
-    #sidebar {
-      width: 140px;
-      padding: 10px 5px;
-      font-size: 14px;
-    }
-    #content {
-      margin-left: 140px;
-      padding: 10px 8px;
-    }
-    #product-list {
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      max-width: 100%;
-      gap: 10px;
-    }
-    .product-card {
-      width: 140px;
-      min-height: 240px;
-      padding: 8px;
-    }
-    .product-card img {
-      width: 110px;
-      height: 110px;
-      margin-bottom: 8px;
-    }
-    #product-description {
-      max-width: 90vw;
-      padding: 10px;
-    }
-    #cart {
-      padding: 8px 15px;
-      font-size: 14px;
-    }
-  }
-</style>
+    <meta charset="UTF-8" />
+    <title>Мини-магазин Telegram WebApp</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            margin: 0; padding: 1rem;
+        }
+        h1 {
+            text-align: center;
+        }
+        .product {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+        #cart {
+            margin-top: 2rem;
+            border-top: 2px solid #888;
+            padding-top: 1rem;
+        }
+        #cart-items {
+            margin-bottom: 1rem;
+        }
+        #pay-button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #pay-button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
+    <h1>Мини-магазин</h1>
 
-<div id="sidebar">
-  <h2>Категории</h2>
-  <button class="category-btn active" data-category="tshirts">Футболки</button>
-  <button class="category-btn" data-category="hoodies">Худи, свитшоты</button>
-  <button class="category-btn" data-category="caps">Кепки, панамы</button>
-  <button class="category-btn" data-category="backpacks">Рюкзаки</button>
-  <button class="category-btn" data-category="stationery">Канцелярия</button>
-  <button class="category-btn" data-category="powerbank">Powerbank</button>
-  <button class="category-btn" data-category="mugs">Бутылки, кружки</button>
-</div>
+    <div class="product" data-id="product1" data-price="5000">
+        <div>Товар 1 — 50.00 ₽</div>
+        <button class="add-btn">Добавить в корзину</button>
+    </div>
+    <div class="product" data-id="product2" data-price="3000">
+        <div>Товар 2 — 30.00 ₽</div>
+        <button class="add-btn">Добавить в корзину</button>
+    </div>
 
-<div id="content">
-  <div id="product-list"></div>
-  <div id="product-description">
-    <h3 id="desc-title"></h3>
-    <p id="desc-text"></p>
-    <button id="desc-add-to-cart">Добавить в корзину</button>
-  </div>
-</div>
-
-<div id="cart" title="Открыть корзину">
-  🛒 <span id="cart-total">0 ₽</span>
-</div>
+    <div id="cart">
+        <h2>Корзина</h2>
+        <div id="cart-items">Корзина пуста</div>
+        <div><strong>Итого: </strong><span id="total">0.00 ₽</span></div>
+        <button id="pay-button" disabled>Оплатить</button>
+    </div>
 
 <script>
-  const PRODUCTS = {
-    tshirts: [
-      {id: "classic_tshirt", title: "Футболка Classic", price: 1500, img: "img/classic_tshirt.png", description: "Классическая футболка из хлопка, комфортная и стильная."},
-      {id: "oversize_tshirt", title: "Футболка Oversize", price: 1800, img: "img/oversize_tshirt.png", description: "Свободная футболка oversize для модного образа."},
-      {id: "pola_tshirt", title: "Футболка Pola", price: 1700, img: "img/pola_tshirt.png", description: "Футболка с поло воротником, элегантный стиль."}
-    ],
-    hoodies: [
-      {id: "hoodie", title: "Худи", price: 3500, img: "img/hoodie.png", description: "Теплое худи с капюшоном, идеально для прохладной погоды."},
-      {id: "sweatshirt", title: "Свитшот", price: 3000, img: "img/sweatshirt.png", description: "Удобный свитшот из мягкого материала."}
-    ],
-    caps: [
-      {id: "cap", title: "Кепки", price: 1200, img: "img/cap.png", description: "Стильные кепки для любого образа."},
-      {id: "panama", title: "Панамы", price: 1300, img: "img/panama.png", description: "Легкие панамы для защиты от солнца."}
-    ],
-    backpacks: [
-      {id: "backpack", title: "Рюкзак", price: 4500, img: "img/backpack.png", description: "Прочный рюкзак с большим количеством отделений."}
-    ],
-    stationery: [
-      {id: "pen", title: "Ручка", price: 500, img: "img/pen.png", description: "Качественная ручка для письма."},
-      {id: "notebooks", title: "Блокноты", price: 700, img: "img/notebooks.png", description: "Блокноты для записей и идей."},
-      {id: "planners", title: "Ежедневники", price: 900, img: "img/planners.png", description: "Ежедневники для планирования дня."}
-    ],
-    powerbank: [
-      {id: "powerbank", title: "Powerbank", price: 4000, img: "img/powerbank.png", description: "Портативный аккумулятор для зарядки устройств."}
-    ],
-    mugs: [
-      {id: "mug", title: "Кружка сублимационная", price: 1100, img: "img/mug.png", description: "Кружка для сублимационной печати."},
-      {id: "water_bottle", title: "Бутылка для воды", price: 1500, img: "img/water_bottle.png", description: "Бутылка для воды с удобной крышкой."},
-      {id: "thermo_mug", title: "Термокружки", price: 1600, img: "img/thermo_mug.png", description: "Термокружка для поддержания температуры напитка."}
-    ]
-  };
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-  const categoryButtons = document.querySelectorAll('.category-btn');
-  const productList = document.getElementById('product-list');
-  const productDescription = document.getElementById('product-description');
-  const descTitle = document.getElementById('desc-title');
-  const descText = document.getElementById('desc-text');
-  const descAddToCartBtn = document.getElementById('desc-add-to-cart');
-  const cartElem = document.getElementById('cart');
-  const cartTotalElem = document.getElementById('cart-total');
-
-  let currentCategory = 'tshirts';
-  let selectedProduct = null;
-  let cart = {};
-
-  function renderCategory(category) {
-    productDescription.style.display = 'none';
-    productList.innerHTML = '';
-    const products = PRODUCTS[category] || [];
-    products.forEach(prod => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.dataset.id = prod.id;
-      card.innerHTML = `
-        <img src="${prod.img}" alt="${prod.title}" />
-        <h3>${prod.title}</h3>
-        <div class="price">${prod.price} ₽</div>
-      `;
-      card.onclick = () => showDescription(prod);
-      productList.appendChild(card);
-    });
-  }
-
-  function showDescription(product) {
-    selectedProduct = product;
-    descTitle.textContent = product.title;
-    descText.textContent = product.description;
-    productDescription.style.display = 'block';
-  }
-
-  function updateCartDisplay() {
-    const total = Object.entries(cart).reduce((sum, [id, qty]) => {
-      const p = Object.values(PRODUCTS).flat().find(pr => pr.id === id);
-      return sum + (p ? p.price * qty : 0);
-    }, 0);
-    cartTotalElem.textContent = total + ' ₽';
-  }
-
-  descAddToCartBtn.onclick = () => {
-    if (!selectedProduct) return;
-    cart[selectedProduct.id] = (cart[selectedProduct.id] || 0) + 1;
-    updateCartDisplay();
-    alert(`Добавлено в корзину: ${selectedProduct.title}`);
-  };
-
-  categoryButtons.forEach(btn => {
-    btn.onclick = () => {
-      categoryButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentCategory = btn.dataset.category;
-      renderCategory(currentCategory);
+    const products = {
+        product1: {name: "Товар 1", price: 5000},
+        product2: {name: "Товар 2", price: 3000},
     };
-  });
 
-  cartElem.onclick = () => {
-    if (Object.keys(cart).length === 0) {
-      alert("Корзина пуста");
-      return;
+    const cart = {};
+
+    function updateCartUI() {
+        const cartItemsDiv = document.getElementById("cart-items");
+        const totalSpan = document.getElementById("total");
+        let total = 0;
+        let html = "";
+
+        for (const [id, qty] of Object.entries(cart)) {
+            if (qty > 0) {
+                const product = products[id];
+                const sum = product.price * qty;
+                total += sum;
+                html += `<div>${product.name} × ${qty} — ${(sum / 100).toFixed(2)} ₽</div>`;
+            }
+        }
+
+        if (!html) {
+            cartItemsDiv.innerHTML = "Корзина пуста";
+            totalSpan.textContent = "0.00 ₽";
+            document.getElementById("pay-button").disabled = true;
+        } else {
+            cartItemsDiv.innerHTML = html;
+            totalSpan.textContent = (total / 100).toFixed(2) + " ₽";
+            document.getElementById("pay-button").disabled = false;
+        }
     }
-    let cartContent = "Ваша корзина:\n\n";
-    Object.entries(cart).forEach(([id, qty]) => {
-      const p = Object.values(PRODUCTS).flat().find(pr => pr.id === id);
-      if (p) {
-        cartContent += `${p.title} x${qty} = ${p.price * qty} ₽\n`;
-      }
+
+    document.querySelectorAll(".add-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const productDiv = button.closest(".product");
+            const id = productDiv.dataset.id;
+            cart[id] = (cart[id] || 0) + 1;
+            updateCartUI();
+        });
     });
-    cartContent += "\nДля оплаты нажмите ОК";
-    if (confirm(cartContent)) {
-      Telegram.WebApp.sendData(JSON.stringify({cart: Object.entries(cart).map(([id, quantity]) => ({id, quantity}))}));
-    }
-  };
 
-  renderCategory(currentCategory);
-  updateCartDisplay();
+    document.getElementById("pay-button").addEventListener("click", () => {
+        // Отправляем данные корзины боту через sendData (JSON)
+        const cartForSend = {};
+        let total = 0;
+        for (const [id, qty] of Object.entries(cart)) {
+            if (qty > 0) {
+                cartForSend[id] = qty;
+                total += products[id].price * qty;
+            }
+        }
+        const data = {
+            cart: cartForSend,
+            total: total,
+        };
+        tg.sendData(JSON.stringify(data));
+    });
 
-  let Telegram;
-  if (window.Telegram && window.Telegram.WebApp) {
-    Telegram = window.Telegram;
-    Telegram.WebApp.expand();
-  } else {
-    Telegram = {
-      WebApp: {
-        sendData: (data) => alert("Данные для оплаты отправлены:\n" + data),
-        expand: () => {},
-      }
-    };
-  }
+    updateCartUI();
 </script>
-
 </body>
 </html>
