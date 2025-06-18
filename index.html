@@ -180,7 +180,7 @@
         cartListEl.innerHTML = listHtml;
       }
 
-      payBtn.onclick = () => {
+      payBtn.onclick = async () => {
         if (!tg) {
           alert("Оплата доступна только внутри Telegram Web App.");
           return;
@@ -188,7 +188,21 @@
         const cartData = {
           cart: Object.entries(cart).map(([id, quantity]) => ({id, quantity}))
         };
-        tg.sendData(JSON.stringify(cartData));
+        try {
+          const resp = await fetch('https://YOUR_SERVER_URL_OR_IP_HERE', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(cartData)
+          });
+          const result = await resp.text();
+          if (result) {
+            tg.openInvoice(result);
+          } else {
+            alert('Не удалось получить ссылку на оплату');
+          }
+        } catch (e) {
+          alert('Ошибка при запросе на сервер: ' + e.message);
+        }
       };
 
       renderCatalog();
