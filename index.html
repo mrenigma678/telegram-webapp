@@ -98,9 +98,7 @@
   </style>
 </head>
 <body>
-  <div class="catalog" id="catalog">
-    <!-- Карточки товаров будут вставлены скриптом -->
-  </div>
+  <div class="catalog" id="catalog"></div>
 
   <div id="cart" style="display:none;">
     <div style="flex-grow:1;">
@@ -187,11 +185,9 @@
           alert("Оплата доступна только внутри Telegram Web App.");
           return;
         }
-        // Формируем данные корзины для отправки серверу
         const cartData = {
           cart: Object.entries(cart).map(([id, quantity]) => ({id, quantity}))
         };
-        // Отправляем данные на сервер (боту) через sendData
         tg.sendData(JSON.stringify(cartData));
       };
 
