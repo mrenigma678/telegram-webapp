@@ -189,7 +189,7 @@
           cart: Object.entries(cart).map(([id, quantity]) => ({id, quantity}))
         };
         try {
-          const resp = await fetch('https://YOUR_SERVER_URL_OR_IP_HERE', {
+          const resp = await fetch('https://mrenigma678.github.io/telegram-webapp/', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(cartData)
