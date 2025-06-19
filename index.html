@@ -3,199 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Интернет-магазин Telegram Web App</title>
+  <title>Простой магазин</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 10px;
-      background: #f5f5f5;
-    }
-    .catalog {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      margin-bottom: 80px;
-      flex-wrap: wrap;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      width: 180px;
-      padding: 15px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-      transition: box-shadow 0.3s;
-      margin-bottom: 15px;
-    }
-    .card:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    }
-    .card h3 {
-      margin: 10px 0 5px;
-    }
-    .card p {
-      margin: 0 0 10px;
-      font-weight: bold;
-      color: #333;
-    }
-    #cart {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      width: 90%;
-      max-width: 400px;
-      padding: 10px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 16px;
-      user-select: none;
-      flex-wrap: wrap;
-    }
-    #cart-list {
-      max-height: 150px;
-      overflow-y: auto;
-      margin-top: 10px;
-      font-size: 14px;
-      color: #555;
-      width: 100%;
-      margin-bottom: 10px;
-    }
-    button {
-      background-color: #0088cc;
-      border: none;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s;
-      flex-shrink: 0;
-    }
-    button:hover {
-      background-color: #006699;
-    }
-    #message {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #333;
-      color: white;
-      padding: 15px 25px;
-      border-radius: 10px;
-      display: none;
-      z-index: 1000;
-      max-width: 80%;
-      text-align: center;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
-  <div class="catalog" id="catalog"></div>
-
-  <div id="cart" style="display:none;">
-    <div style="flex-grow:1;">
-      <strong>Корзина:</strong> <span id="cart-summary">Пусто</span>
-      <div id="cart-list"></div>
-    </div>
-    <button id="pay-btn">Оплатить</button>
+  <h1>Магазин</h1>
+  <div>
+    <p>Товар 1 — 100 руб.</p>
+    <button id="add-to-cart">Добавить в корзину</button>
+  </div>
+  <div style="margin-top:20px;">
+    <button id="pay-btn" disabled>Оплатить</button>
   </div>
 
-  <div id="message"></div>
-
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const tg = window.Telegram?.WebApp;
+    const tg = window.Telegram.WebApp;
+    tg.ready();
 
-      const PRODUCTS = [
-        {id: "pen", title: "Ручка", price: 100},
-        {id: "notebook", title: "Блокнот", price: 200},
-      ];
+    let cart = [];
 
-      let cart = {};
+    document.getElementById('add-to-cart').onclick = () => {
+      cart.push({ id: "item1", quantity: 1 });
+      alert("Товар добавлен в корзину");
+      document.getElementById('pay-btn').disabled = false;
+    };
 
-      const catalogEl = document.getElementById("catalog");
-      const cartEl = document.getElementById("cart");
-      const cartSummaryEl = document.getElementById("cart-summary");
-      const cartListEl = document.getElementById("cart-list");
-      const payBtn = document.getElementById("pay-btn");
-      const messageEl = document.getElementById("message");
-
-      function showMessage(text) {
-        messageEl.textContent = text;
-        messageEl.style.display = "block";
-        setTimeout(() => {
-          messageEl.style.display = "none";
-        }, 2000);
+    document.getElementById('pay-btn').onclick = () => {
+      if (cart.length === 0) {
+        alert("Корзина пуста");
+        return;
       }
-
-      function renderCatalog() {
-        catalogEl.innerHTML = "";
-        PRODUCTS.forEach(product => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `<h3>${product.title}</h3><p>${product.price} руб</p>`;
-          card.onclick = () => {
-            showMessage(`Добавить "${product.title}" в корзину?`);
-            addToCart(product.id);
-          };
-          catalogEl.appendChild(card);
-        });
-      }
-
-      function addToCart(productId) {
-        if (!cart[productId]) {
-          cart[productId] = 0;
-        }
-        cart[productId]++;
-        updateCartUI();
-      }
-
-      function updateCartUI() {
-        const keys = Object.keys(cart);
-        if (keys.length === 0) {
-          cartEl.style.display = "none";
-          return;
-        }
-        cartEl.style.display = "flex";
-
-        let total = 0;
-        let listHtml = "";
-        keys.forEach(id => {
-          const product = PRODUCTS.find(p => p.id === id);
-          const quantity = cart[id];
-          const price = product.price * quantity;
-          total += price;
-          listHtml += `${product.title} x ${quantity} = ${price} руб<br>`;
-        });
-        cartSummaryEl.textContent = `Всего: ${total} руб`;
-        cartListEl.innerHTML = listHtml;
-      }
-
-      payBtn.onclick = () => {
-        if (!tg) {
-          alert("Оплата доступна только внутри Telegram Web App.");
-          return;
-        }
-        const cartData = {
-          cart: Object.entries(cart).map(([id, quantity]) => ({id, quantity}))
-        };
-        // Отправляем данные корзины боту через Telegram.WebApp.sendData
-        Telegram.WebApp.sendData(JSON.stringify(cartData));
-        showMessage("Данные корзины отправлены боту!");
-      };
-
-      renderCatalog();
-      updateCartUI();
-    });
+      const data = { cart };
+      tg.sendData(JSON.stringify(data));
+      alert("Данные корзины отправлены боту");
+    };
   </script>
 </body>
 </html>
