@@ -180,7 +180,7 @@
         cartListEl.innerHTML = listHtml;
       }
 
-      payBtn.onclick = async () => {
+      payBtn.onclick = () => {
         if (!tg) {
           alert("Оплата доступна только внутри Telegram Web App.");
           return;
@@ -188,21 +188,9 @@
         const cartData = {
           cart: Object.entries(cart).map(([id, quantity]) => ({id, quantity}))
         };
-        try {
-          const resp = await fetch('https://mrenigma678.github.io/telegram-webapp/', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(cartData)
-          });
-          const result = await resp.text();
-          if (result) {
-            tg.openInvoice(result);
-          } else {
-            alert('Не удалось получить ссылку на оплату');
-          }
-        } catch (e) {
-          alert('Ошибка при запросе на сервер: ' + e.message);
-        }
+        // Отправляем данные корзины боту через Telegram.WebApp.sendData
+        Telegram.WebApp.sendData(JSON.stringify(cartData));
+        showMessage("Данные корзины отправлены боту!");
       };
 
       renderCatalog();
